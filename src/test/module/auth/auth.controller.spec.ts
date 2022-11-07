@@ -9,6 +9,8 @@ import { User } from '../../../domain/user/user.schema';
 import * as request from 'supertest';
 import { validationPipe } from '../../../common/pipe/validation.pipe';
 import { AuthErrorMessage } from '../../../module/auth/auth.message';
+import * as bcrypt from 'bcrypt';
+import { sessionConfig } from '../../../module/auth/auth.session.config';
 
 describe('AuthController', () => {
   let app: NestFastifyApplication;
@@ -29,6 +31,7 @@ describe('AuthController', () => {
     app = module.createNestApplication();
     app.setGlobalPrefix('/api');
     validationPipe(app);
+    sessionConfig(app);
     await app.init();
 
     userRepository = module.get<UserRepository>(UserRepository);
@@ -141,6 +144,57 @@ describe('AuthController', () => {
           password: 'asdfa12333',
           name: '김루비',
           phone: '01011112222',
+        })
+        .expect(201);
+    });
+  });
+
+  describe('POST /api/auth/login - 로그인', () => {
+    const email = 'ruby@gmail.com';
+    const password = 'qwer1234';
+    beforeAll(async () => {
+      await userRepository.deleteAll();
+
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      await userRepository.create({
+        email,
+        password: hashedPassword,
+        name: 'ruby11',
+        phone: '010-1111-2222',
+      } as User);
+    });
+
+    test('등록되지 않은 이메일로 로그인 요청시 401 응답', async () => {
+      const err = await request(app.getHttpServer())
+        .post('/api/auth/login')
+        .send({
+          email: 'radas@naver.com',
+          password,
+        })
+        .expect(401);
+
+      expect(err.body.message).toEqual(AuthErrorMessage.INVALID_USER);
+    });
+
+    test('일치하지 않는 비밀번호로 로그인 요청시 401 응답', async () => {
+      const err = await request(app.getHttpServer())
+        .post('/api/auth/login')
+        .send({
+          email,
+          password: 'asdasd12312',
+        })
+        .expect(401);
+
+      expect(err.body.message).toEqual(AuthErrorMessage.INVALID_USER);
+    });
+
+    test('로그인 성공', async () => {
+      return request(app.getHttpServer())
+        .post('/api/auth/login')
+        .send({
+          email,
+          password,
         })
         .expect(201);
     });
