@@ -5,6 +5,7 @@ import { User } from '../../../domain/user/user.schema';
 import { AuthStrategy } from '../../../module/auth/auth.strategy';
 import { InvalidUserInfoException } from '../../../module/auth/auth.exception';
 import * as bcrypt from 'bcrypt';
+import { Types } from 'mongoose';
 
 describe('AuthStrategy', () => {
   let userRepository: UserRepository;
@@ -44,10 +45,10 @@ describe('AuthStrategy', () => {
       const email = 'ruby@gmail.com';
       const password = 'asdqwe123';
       const hashedPassword = await bcrypt.hash(password, 12);
-      const findUser: User = {
+      const findUser: User & { _id: Types.ObjectId } = {
         email,
         password: hashedPassword,
-      } as User;
+      } as User & { _id: Types.ObjectId };
 
       jest
         .spyOn(userRepository, 'findByEmail')
@@ -63,10 +64,10 @@ describe('AuthStrategy', () => {
       const email = 'ruby@gmail.com';
       const password = 'asdqwe123';
       const hashedPassword = await bcrypt.hash(password, 12);
-      const findUser: User = {
+      const findUser: User & { _id: Types.ObjectId } = {
         email,
         password: hashedPassword,
-      } as User;
+      } as User & { _id: Types.ObjectId };
 
       jest
         .spyOn(userRepository, 'findByEmail')

@@ -4,6 +4,7 @@ import { UserRepository } from '../../../domain/user/user.repository';
 import { getModelToken } from '@nestjs/mongoose';
 import { User } from '../../../domain/user/user.schema';
 import { ExistsEmailUserException } from '../../../module/auth/auth.exception';
+import { Types } from 'mongoose';
 
 describe('AuthService', () => {
   let userRepository: UserRepository;
@@ -46,7 +47,9 @@ describe('AuthService', () => {
         .mockResolvedValue(Promise.resolve(false));
       jest
         .spyOn(userRepository, 'create')
-        .mockResolvedValue(Promise.resolve({ name: 'ruby' } as User));
+        .mockResolvedValue(
+          Promise.resolve({ name: 'ruby' } as User & { _id: Types.ObjectId }),
+        );
 
       const savedUser = await authService.signUp({
         email: 'ruby@gmail.com',

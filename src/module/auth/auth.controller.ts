@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './auth.request.dto';
-import { AuthLocalGuard } from './auth.guard';
+import { AuthenticatedGuard, AuthLocalGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,7 +26,7 @@ export class AuthController {
   @Post('login')
   login(): void {}
 
-  @UseGuards(AuthLocalGuard)
+  @UseGuards(AuthenticatedGuard)
   @Get('logout')
   logout(@Req() req): void {
     req.session.destroy();

@@ -11,6 +11,7 @@ import { validationPipe } from '../../../common/pipe/validation.pipe';
 import { AuthErrorMessage } from '../../../module/auth/auth.message';
 import * as bcrypt from 'bcrypt';
 import { sessionConfig } from '../../../module/auth/auth.session.config';
+import { CommonErrorMessage } from '../../../common/error/common.message';
 
 describe('AuthController', () => {
   let app: NestFastifyApplication;
@@ -50,90 +51,96 @@ describe('AuthController', () => {
       } as User);
     });
 
-    test('이메일 중복 가입시 400 응답', async () => {
-      const err = await request(app.getHttpServer())
-        .post('/api/auth/signUp')
-        .send({
-          email,
-          password: 'asd123asd',
-          name: 'ruby11',
-          phone: '01011112222',
-        })
-        .expect(400);
+    describe('회원가입 실패', () => {
+      test('이메일 중복 가입시 400 응답', async () => {
+        const err = await request(app.getHttpServer())
+          .post('/api/auth/signUp')
+          .send({
+            email,
+            password: 'asd123asd',
+            name: 'ruby11',
+            phone: '010-1111-2222',
+          })
+          .expect(400);
 
-      return expect(err.body.message).toEqual(
-        AuthErrorMessage.EXISTS_EMAIL_USER,
-      );
-    });
+        return expect(err.body.message).toEqual(
+          AuthErrorMessage.EXISTS_EMAIL_USER,
+        );
+      });
 
-    test('회원 가입에 필요한 값들이 형식에 맞지 않을 경우 400 응답', async () => {
-      const err = await request(app.getHttpServer())
-        .post('/api/auth/signUp')
-        .send({
-          email: 'qwesad',
-          password: 'asdasd',
-          name: 'r',
-          phone: '0101111',
-        })
-        .expect(400);
+      test('회원 가입에 필요한 값들이 형식에 맞지 않을 경우 400 응답', async () => {
+        const err = await request(app.getHttpServer())
+          .post('/api/auth/signUp')
+          .send({
+            email: 'qwesad',
+            password: 'asdasd',
+            name: 'r',
+            phone: '0101111',
+          })
+          .expect(400);
 
-      await expect(err.body.message.length).toEqual(4);
-      await expect(err.body.message).toContain(
-        AuthErrorMessage.INVALID_PASSWORD,
-      );
-      await expect(err.body.message).toContain(AuthErrorMessage.INVALID_EMAIL);
-      await expect(err.body.message).toContain(
-        AuthErrorMessage.NAME_MIN_LENGTH,
-      );
-      await expect(err.body.message).toContain(AuthErrorMessage.INVALID_PHONE);
-    });
+        await expect(err.body.message.length).toEqual(4);
+        await expect(err.body.message).toContain(
+          AuthErrorMessage.INVALID_PASSWORD,
+        );
+        await expect(err.body.message).toContain(
+          CommonErrorMessage.INVALID_EMAIL,
+        );
+        await expect(err.body.message).toContain(
+          AuthErrorMessage.MIN_LENGTH_NAME,
+        );
+        await expect(err.body.message).toContain(
+          CommonErrorMessage.INVALID_PHONE,
+        );
+      });
 
-    test('비밀번호에 숫자가 포함되지 않은 경우 400 응답', async () => {
-      const err = await request(app.getHttpServer())
-        .post('/api/auth/signUp')
-        .send({
-          email: 'diamond@gmail.com',
-          password: 'asdfaasdsa',
-          name: '김루비',
-          phone: '01011112222',
-        })
-        .expect(400);
+      test('비밀번호에 숫자가 포함되지 않은 경우 400 응답', async () => {
+        const err = await request(app.getHttpServer())
+          .post('/api/auth/signUp')
+          .send({
+            email: 'diamond@gmail.com',
+            password: 'asdfaasdsa',
+            name: '김루비',
+            phone: '010-1111-2222',
+          })
+          .expect(400);
 
-      await expect(err.body.message).toContain(
-        AuthErrorMessage.INVALID_PASSWORD,
-      );
-    });
+        await expect(err.body.message).toContain(
+          AuthErrorMessage.INVALID_PASSWORD,
+        );
+      });
 
-    test('비밀번호에 문자가 포함되지 않은 경우 400 응답', async () => {
-      const err = await request(app.getHttpServer())
-        .post('/api/auth/signUp')
-        .send({
-          email: 'diamond@gmail.com',
-          password: '123123123',
-          name: '김루비',
-          phone: '01011112222',
-        })
-        .expect(400);
+      test('비밀번호에 문자가 포함되지 않은 경우 400 응답', async () => {
+        const err = await request(app.getHttpServer())
+          .post('/api/auth/signUp')
+          .send({
+            email: 'diamond@gmail.com',
+            password: '123123123',
+            name: '김루비',
+            phone: '010-1111-2222',
+          })
+          .expect(400);
 
-      await expect(err.body.message).toContain(
-        AuthErrorMessage.INVALID_PASSWORD,
-      );
-    });
+        await expect(err.body.message).toContain(
+          AuthErrorMessage.INVALID_PASSWORD,
+        );
+      });
 
-    test('비밀번호가 8글자 미만일 경우 400 응답', async () => {
-      const err = await request(app.getHttpServer())
-        .post('/api/auth/signUp')
-        .send({
-          email: 'diamond@gmail.com',
-          password: '123asd3',
-          name: '김루비',
-          phone: '01011112222',
-        })
-        .expect(400);
+      test('비밀번호가 8글자 미만일 경우 400 응답', async () => {
+        const err = await request(app.getHttpServer())
+          .post('/api/auth/signUp')
+          .send({
+            email: 'diamond@gmail.com',
+            password: '123asd3',
+            name: '김루비',
+            phone: '010-1111-2222',
+          })
+          .expect(400);
 
-      await expect(err.body.message).toContain(
-        AuthErrorMessage.INVALID_PASSWORD,
-      );
+        await expect(err.body.message).toContain(
+          AuthErrorMessage.INVALID_PASSWORD,
+        );
+      });
     });
 
     test('회원 가입 성공', async () => {
@@ -143,7 +150,7 @@ describe('AuthController', () => {
           email: 'diamond@gmail.com',
           password: 'asdfa12333',
           name: '김루비',
-          phone: '01011112222',
+          phone: '010-1111-2222',
         })
         .expect(201);
     });
@@ -164,29 +171,30 @@ describe('AuthController', () => {
         phone: '010-1111-2222',
       } as User);
     });
+    describe('로그인 실패', () => {
+      test('등록되지 않은 이메일로 로그인 요청시 401 응답', async () => {
+        const err = await request(app.getHttpServer())
+          .post('/api/auth/login')
+          .send({
+            email: 'radas@naver.com',
+            password,
+          })
+          .expect(401);
 
-    test('등록되지 않은 이메일로 로그인 요청시 401 응답', async () => {
-      const err = await request(app.getHttpServer())
-        .post('/api/auth/login')
-        .send({
-          email: 'radas@naver.com',
-          password,
-        })
-        .expect(401);
+        expect(err.body.message).toEqual(AuthErrorMessage.INVALID_USER);
+      });
 
-      expect(err.body.message).toEqual(AuthErrorMessage.INVALID_USER);
-    });
+      test('일치하지 않는 비밀번호로 로그인 요청시 401 응답', async () => {
+        const err = await request(app.getHttpServer())
+          .post('/api/auth/login')
+          .send({
+            email,
+            password: 'asdasd12312',
+          })
+          .expect(401);
 
-    test('일치하지 않는 비밀번호로 로그인 요청시 401 응답', async () => {
-      const err = await request(app.getHttpServer())
-        .post('/api/auth/login')
-        .send({
-          email,
-          password: 'asdasd12312',
-        })
-        .expect(401);
-
-      expect(err.body.message).toEqual(AuthErrorMessage.INVALID_USER);
+        expect(err.body.message).toEqual(AuthErrorMessage.INVALID_USER);
+      });
     });
 
     test('로그인 성공', async () => {
