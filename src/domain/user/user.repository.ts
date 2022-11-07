@@ -10,10 +10,14 @@ export class UserRepository {
   ) {}
 
   async existByEmail(email: string): Promise<boolean> {
-    return !!(await this.userModel.exists({ email }));
+    return !!(await this.userModel.exists({ email }).exec());
   }
 
   async create(user: User): Promise<User> {
     return await this.userModel.create(user);
+  }
+
+  async deleteAll() {
+    await this.userModel.deleteMany({}, {}).exec();
   }
 }
