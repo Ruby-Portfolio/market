@@ -1,5 +1,6 @@
-import * as session from 'express-session';
+// import * as session from 'express-session';
 import * as passport from 'passport';
+import * as session from 'express-session';
 
 export const sessionConfig = (app) => {
   app.use(
