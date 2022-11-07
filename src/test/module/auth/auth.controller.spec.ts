@@ -199,4 +199,47 @@ describe('AuthController', () => {
         .expect(201);
     });
   });
+
+  describe('GET /api/auth/logout - 로그아웃', () => {
+    const email = 'ruby@gmail.com';
+    const password = 'qwer1234';
+    let agent;
+    beforeAll(async () => {
+      await userRepository.deleteAll();
+
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      await userRepository.create({
+        email,
+        password: hashedPassword,
+        name: 'ruby11',
+        phone: '010-1111-2222',
+      } as User);
+
+      agent = request.agent(app.getHttpServer());
+      const res = await agent
+        .post('/api/auth/login')
+        .send({
+          email,
+          password,
+        })
+        .expect(201);
+
+      expect(
+        res.headers['set-cookie'][0].includes(process.env.SESSION_ID),
+      ).toBeTruthy();
+    });
+
+    test('로그아웃 성공', async () => {
+      const res = await agent
+        .get('/api/auth/logout')
+        .send({
+          email,
+          password,
+        })
+        .expect(200);
+
+      expect(res.headers['set-cookie']).toBeUndefined();
+    });
+  });
 });
