@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './domain/user/user.module';
 import { MarketModule } from './domain/market/market.module';
 import { ProductModule } from './domain/product/product.module';
+import { AuthModule } from './module/auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ProductModule } from './domain/product/product.module';
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGO_URL),
+    AuthModule,
     UserModule,
     MarketModule,
     ProductModule,
