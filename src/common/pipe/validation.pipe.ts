@@ -4,7 +4,7 @@ import {
   PipeTransform,
   ValidationPipe,
 } from '@nestjs/common';
-import { InvalidIdException } from '../error/common.exception';
+import { InvalidIdException } from '../exception/common.exception';
 
 export const validationPipe = (app) => {
   app.useGlobalPipes(

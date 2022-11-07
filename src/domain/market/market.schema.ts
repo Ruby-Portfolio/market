@@ -1,6 +1,7 @@
 import { Document, SchemaOptions, SchemaTypes, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { Address } from '../embeddeds/address';
 
 const options: SchemaOptions = {
   timestamps: true,
@@ -22,6 +23,9 @@ export class Market extends Document {
   @IsNotEmpty()
   @Prop({ required: true })
   phone: string;
+
+  @Prop()
+  address: Address;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
   user: Types.ObjectId;
