@@ -34,7 +34,7 @@ describe('AuthController', () => {
     userRepository = module.get<UserRepository>(UserRepository);
   });
 
-  describe('회원 가입', () => {
+  describe('POST /api/auth/signUp - 회원가입', () => {
     const email = 'ruby@gmail.com';
     beforeAll(async () => {
       await userRepository.deleteAll();

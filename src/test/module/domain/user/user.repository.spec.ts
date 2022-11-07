@@ -27,7 +27,7 @@ describe('UserRepository', () => {
     userRepository = module.get<UserRepository>(UserRepository);
   });
 
-  describe('existByEmail', () => {
+  describe('existByEmail - 이메일에 해당하는 유저 정보 존재 여부', () => {
     const email = 'ruby@gmail.com';
     beforeEach(async () => {
       await userRepository.deleteAll();

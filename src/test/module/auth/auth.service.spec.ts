@@ -24,7 +24,7 @@ describe('AuthService', () => {
     authService = await module.get<AuthService>(AuthService);
   });
 
-  describe('회원 가입', () => {
+  describe('signUp - 회원가입', () => {
     test('이메일 중복 가입시 ExistsEmailUserException 예외 처리', async () => {
       jest
         .spyOn(userRepository, 'existByEmail')
