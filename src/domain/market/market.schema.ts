@@ -1,4 +1,4 @@
-import { Document, SchemaOptions } from 'mongoose';
+import { Document, SchemaOptions, SchemaTypes, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
 
@@ -7,30 +7,24 @@ const options: SchemaOptions = {
 };
 
 @Schema(options)
-export class User extends Document {
-  @IsEmail()
-  @IsNotEmpty()
-  @Prop({ required: true })
-  email: string;
-
-  @IsNotEmpty()
-  @Prop({ required: true })
-  password: string;
-
+export class Market extends Document {
   @IsString()
   @IsNotEmpty()
   @Prop({ required: true })
   name: string;
 
+  @IsEmail()
+  @IsNotEmpty()
+  @Prop({ required: true })
+  email: string;
+
   @IsPhoneNumber()
   @IsNotEmpty()
   @Prop({ required: true })
   phone: string;
+
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
+  user: Types.ObjectId;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
-UserSchema.virtual('markets', {
-  ref: 'Market',
-  localField: '_id',
-  foreignField: 'user',
-});
+export const MarketSchema = SchemaFactory.createForClass(Market);
