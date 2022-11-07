@@ -1,6 +1,13 @@
 import { Document, SchemaOptions } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsMobilePhone,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import { AuthErrorMessage } from '../../module/auth/auth.message';
 
 const options: SchemaOptions = {
   timestamps: true,
@@ -8,21 +15,22 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class User extends Document {
-  @IsEmail()
+  @IsEmail({}, { message: AuthErrorMessage.INVALID_EMAIL })
   @IsNotEmpty()
   @Prop({ required: true })
   email: string;
 
+  @IsString()
   @IsNotEmpty()
   @Prop({ required: true })
   password: string;
 
   @IsString()
-  @IsNotEmpty()
+  @MinLength(2, { message: AuthErrorMessage.NAME_MIN_LENGTH })
   @Prop({ required: true })
   name: string;
 
-  @IsPhoneNumber()
+  @IsMobilePhone('ko-KR', {}, { message: AuthErrorMessage.INVALID_PHONE })
   @IsNotEmpty()
   @Prop({ required: true })
   phone: string;

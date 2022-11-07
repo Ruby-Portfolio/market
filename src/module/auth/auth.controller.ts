@@ -9,6 +9,6 @@ export class AuthController {
   @Post('signUp')
   async signUp(@Body() createUser: CreateUserDto, @Res() res): Promise<void> {
     await this.authService.signUp(createUser);
-    res.status(HttpStatus.CREATED);
+    res.status(HttpStatus.CREATED).send();
   }
 }
