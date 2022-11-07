@@ -7,3 +7,9 @@ export class ExistsEmailUserException extends HttpException {
     super(AuthErrorMessage.EXISTS_EMAIL_USER, HttpStatus.BAD_REQUEST);
   }
 }
+
+export class InvalidUserInfoException extends HttpException {
+  constructor() {
+    super(AuthErrorMessage.INVALID_USER, HttpStatus.BAD_REQUEST);
+  }
+}
