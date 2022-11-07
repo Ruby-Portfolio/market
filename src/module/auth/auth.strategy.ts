@@ -24,8 +24,6 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
       throw new InvalidUserInfoException();
     }
 
-    // 비밀 번호를 제외한 유저 정보 반환
-    const { password, ...result } = findUser;
-    return result;
+    return findUser;
   }
 }

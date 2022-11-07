@@ -6,24 +6,25 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthLocalGuard } from '../../module/auth/auth.guard';
+import { AuthenticatedGuard } from '../../module/auth/auth.guard';
 import { MarketService } from './market.service';
 import { CreateMarketDto } from './market.request.dto';
 import { SessionUser } from '../../module/auth/auth.decorator';
 import { User } from '../user/user.schema';
+import { Types } from 'mongoose';
 
 @Controller('markets')
 export class MarketController {
   constructor(private readonly marketService: MarketService) {}
 
-  @UseGuards(AuthLocalGuard)
+  @UseGuards(AuthenticatedGuard)
   @Post()
   async postMarket(
     @Body() createMarket: CreateMarketDto,
-    @SessionUser() user: User,
+    @SessionUser() user: User & { _id: Types.ObjectId },
     @Res() res,
   ) {
-    await this.marketService.createMarket(createMarket, user.id);
+    await this.marketService.createMarket(createMarket, user._id);
     res.status(HttpStatus.CREATED).send();
   }
 }
