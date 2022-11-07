@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -23,4 +25,10 @@ export class AuthController {
   @UseGuards(AuthLocalGuard)
   @Post('login')
   login(): void {}
+
+  @UseGuards(AuthLocalGuard)
+  @Get('logout')
+  logout(@Req() req): void {
+    req.session.destroy();
+  }
 }
