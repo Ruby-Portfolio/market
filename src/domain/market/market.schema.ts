@@ -1,7 +1,9 @@
 import { Document, SchemaOptions, SchemaTypes, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString } from 'class-validator';
+import { IsEmail, IsMobilePhone, IsNotEmpty, IsString } from 'class-validator';
 import { Address } from '../embeddeds/address';
+import { MarketErrorMessage } from './market.message';
+import { CommonErrorMessage } from '../../common/error/common.message';
 
 const options: SchemaOptions = {
   timestamps: true,
@@ -10,17 +12,15 @@ const options: SchemaOptions = {
 @Schema(options)
 export class Market extends Document {
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: MarketErrorMessage.EMPTY_NAME })
   @Prop({ required: true })
   name: string;
 
-  @IsEmail()
-  @IsNotEmpty()
+  @IsEmail({}, { message: CommonErrorMessage.INVALID_EMAIL })
   @Prop({ required: true })
   email: string;
 
-  @IsPhoneNumber()
-  @IsNotEmpty()
+  @IsMobilePhone('ko-KR', {}, { message: CommonErrorMessage.INVALID_PHONE })
   @Prop({ required: true })
   phone: string;
 
