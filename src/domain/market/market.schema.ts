@@ -28,3 +28,8 @@ export class Market extends Document {
 }
 
 export const MarketSchema = SchemaFactory.createForClass(Market);
+MarketSchema.virtual('products', {
+  ref: 'Product',
+  localField: '_id',
+  foreignField: 'market',
+});
