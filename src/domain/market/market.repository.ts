@@ -9,8 +9,15 @@ export class MarketRepository {
     @InjectModel(Market.name) private readonly marketModel: Model<Market>,
   ) {}
 
-  async create(market: Market): Promise<Market> {
+  async create(market: Market): Promise<Market & { _id: Types.ObjectId }> {
     return await this.marketModel.create(market);
+  }
+
+  async findByMarketIdAndUserId(
+    marketId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<Market & { _id: Types.ObjectId }> {
+    return this.marketModel.findOne({ _id: marketId, user: userId }).exec();
   }
 
   async deleteAll() {

@@ -159,7 +159,7 @@ describe('AuthController', () => {
   describe('POST /api/auth/login - 로그인', () => {
     const email = 'ruby@gmail.com';
     const password = 'qwer1234';
-    beforeAll(async () => {
+    beforeEach(async () => {
       await userRepository.deleteAll();
 
       const hashedPassword = await bcrypt.hash(password, 12);

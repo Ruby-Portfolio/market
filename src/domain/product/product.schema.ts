@@ -1,6 +1,12 @@
 import { Document, SchemaOptions, SchemaTypes, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNumber } from 'class-validator';
+import {
+  IsId,
+  IsNotBlankString,
+} from '../../common/validation/validation.decorator';
+import { ProductErrorMessage } from './product.message';
+import { MarketErrorMessage } from '../market/market.message';
 
 const options: SchemaOptions = {
   timestamps: true,
@@ -8,26 +14,23 @@ const options: SchemaOptions = {
 
 @Schema(options)
 export class Product extends Document {
-  @IsString()
-  @IsNotEmpty()
+  @IsNotBlankString({ message: ProductErrorMessage.EMPTY_NAME })
   @Prop({ required: true })
   name: string;
 
-  @IsNumber()
-  @IsNotEmpty()
+  @IsNumber({}, { message: ProductErrorMessage.INVALID_PRICE })
   @Prop({ required: true })
   price: number;
 
-  @IsNumber()
-  @IsNotEmpty()
+  @IsNumber({}, { message: ProductErrorMessage.INVALID_STOCK })
   @Prop({ required: true })
   stock: number;
 
-  @IsDate()
-  @IsNotEmpty()
+  @IsDate({ message: ProductErrorMessage.INVALID_DEADLINE })
   @Prop({ required: true })
   deadline: Date;
 
+  @IsId({ message: MarketErrorMessage.INVALID_MARKET_ID })
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Market', required: true })
   market: Types.ObjectId;
 }
