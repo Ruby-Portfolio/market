@@ -13,6 +13,7 @@ import { sessionConfig } from '../../../../module/auth/auth.session.config';
 import { User } from '../../../../domain/user/user.schema';
 import { CommonErrorMessage } from '../../../../common/error/common.message';
 import { MarketErrorMessage } from '../../../../domain/market/market.message';
+import { Country } from '../../../../domain/enums/Country';
 
 describe('MarketController', () => {
   let app: NestFastifyApplication;
@@ -63,10 +64,7 @@ describe('MarketController', () => {
           name: '허밍 플루트',
           email: 'flute@naver.com',
           phone: '010-1111-2222',
-          country: '대한민국',
-          city: '서울',
-          street: '종로',
-          zipcode: '11111',
+          country: Country.USA.toString(),
         })
         .expect(403);
     });
@@ -92,20 +90,14 @@ describe('MarketController', () => {
             email: 'flute.com',
             phone: '010-1111-2',
             country: '',
-            city: '',
-            street: '',
-            zipcode: '',
           })
           .expect(400);
 
-        expect(err.body.message.length).toEqual(7);
+        expect(err.body.message.length).toEqual(4);
         expect(err.body.message).toContain(MarketErrorMessage.EMPTY_NAME);
         expect(err.body.message).toContain(CommonErrorMessage.INVALID_PHONE);
         expect(err.body.message).toContain(CommonErrorMessage.INVALID_EMAIL);
         expect(err.body.message).toContain(MarketErrorMessage.EMPTY_COUNTRY);
-        expect(err.body.message).toContain(MarketErrorMessage.EMPTY_CITY);
-        expect(err.body.message).toContain(MarketErrorMessage.EMPTY_STREET);
-        expect(err.body.message).toContain(MarketErrorMessage.EMPTY_ZIPCODE);
       });
 
       test('마켓 등록 성공시 201 응답', async () => {
@@ -115,10 +107,7 @@ describe('MarketController', () => {
             name: '허밍 플루트',
             email: 'flute@naver.com',
             phone: '010-1111-2222',
-            country: '대한민국',
-            city: '서울',
-            street: '종로',
-            zipcode: '11111',
+            country: Country.USA.toString(),
           })
           .expect(201);
 

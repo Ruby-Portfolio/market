@@ -1,4 +1,5 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
+import { Country } from '../../domain/enums/Country';
 
 export function IsId(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
@@ -53,8 +54,22 @@ export function IsLocalDate(validationOptions?: ValidationOptions) {
           );
 
           return regex.test(value);
+        },
+      },
+    });
+  };
+}
 
-          // return !!value.replace(/ /g, '');
+export function IsCountry(validationOptions?: ValidationOptions) {
+  return function (object: Object, propertyName: string) {
+    registerDecorator({
+      name: 'isName',
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      validator: {
+        validate(value: any) {
+          return Object.values(Country).includes(value);
         },
       },
     });
