@@ -61,7 +61,13 @@ export function IsLocalDate(validationOptions?: ValidationOptions) {
   };
 }
 
-export function IsCountry(validationOptions?: ValidationOptions) {
+export function IsCountry(
+  validationOptions?: ValidationOptions & { nullable?: boolean },
+) {
+  const isEmpty = (value) => {
+    return validationOptions.nullable && !value;
+  };
+
   return function (object: Object, propertyName: string) {
     registerDecorator({
       name: 'isName',
@@ -70,6 +76,10 @@ export function IsCountry(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any) {
+          if (isEmpty(value)) {
+            return true;
+          }
+
           return Object.values(Country).includes(value);
         },
       },
@@ -77,7 +87,13 @@ export function IsCountry(validationOptions?: ValidationOptions) {
   };
 }
 
-export function IsCategory(validationOptions?: ValidationOptions) {
+export function IsCategory(
+  validationOptions?: ValidationOptions & { nullable?: boolean },
+) {
+  const isEmpty = (value) => {
+    return validationOptions.nullable && !value;
+  };
+
   return function (object: Object, propertyName: string) {
     registerDecorator({
       name: 'isName',
@@ -86,6 +102,10 @@ export function IsCategory(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any) {
+          if (isEmpty(value)) {
+            return true;
+          }
+
           return Object.values(Category).includes(value);
         },
       },
