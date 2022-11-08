@@ -11,7 +11,7 @@ export class MarketService {
 
   async createMarket(
     { name, email, phone, country, city, street, zipcode }: CreateMarketDto,
-    _id: Types.ObjectId,
+    userId: Types.ObjectId,
   ) {
     const address: Address = { country, city, street, zipcode };
 
@@ -20,7 +20,7 @@ export class MarketService {
       email,
       phone,
       address,
-      user: _id,
+      user: userId,
     } as Market);
   }
 }

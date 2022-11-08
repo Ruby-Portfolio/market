@@ -11,5 +11,6 @@ import { MarketController } from './market.controller';
   ],
   providers: [MarketRepository, MarketService],
   controllers: [MarketController],
+  exports: [MarketRepository],
 })
 export class MarketModule {}

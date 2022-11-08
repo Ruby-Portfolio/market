@@ -4,12 +4,18 @@ import { ExistsEmailUserException } from './auth.exception';
 import { UserRepository } from '../../domain/user/user.repository';
 import { User } from '../../domain/user/user.schema';
 import { CreateUserDto } from './auth.request.dto';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async signUp({ email, password, name, phone }: CreateUserDto): Promise<User> {
+  async signUp({
+    email,
+    password,
+    name,
+    phone,
+  }: CreateUserDto): Promise<User & { _id: Types.ObjectId }> {
     const existsUser = await this.userRepository.existByEmail(email);
 
     if (existsUser) {
