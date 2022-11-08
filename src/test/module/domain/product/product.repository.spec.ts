@@ -259,7 +259,7 @@ describe('ProductRepository', () => {
       await productRepository.deleteAll();
 
       product = await productRepository.create({
-        name: '루비 플루트$',
+        name: '루비 플루트',
         price: 100000000,
         stock: 10,
         category: Category.HOBBY,

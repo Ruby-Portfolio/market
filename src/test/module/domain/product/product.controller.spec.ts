@@ -21,6 +21,7 @@ import { Country } from '../../../../domain/common/enums/Country';
 import { Category } from '../../../../domain/common/enums/Category';
 import { CommonErrorMessage } from '../../../../common/error/common.message';
 import { Product } from '../../../../domain/product/product.schema';
+import { localDateTimeToString } from '../../../../common/util/dateUtil';
 
 describe('ProductController', () => {
   let app: NestFastifyApplication;
@@ -236,6 +237,50 @@ describe('ProductController', () => {
 
         expect(res.body.products.length).toEqual(2);
       });
+    });
+  });
+
+  describe('GET /api/products/:productId - 상품 상세 조회', () => {
+    let product: Product & { _id: Types.ObjectId };
+    beforeAll(async () => {
+      await productRepository.deleteAll();
+
+      product = await productRepository.create({
+        name: '루비 플루트',
+        price: 100000000,
+        stock: 10,
+        category: Category.HOBBY,
+        country: market.country,
+        deadline: new Date(`2022-11-20 10:00`),
+        market: market._id,
+      } as Product);
+    });
+
+    test('존재하지 않는 상품 id로 상세 조회', async () => {
+      const notExistsProductId = new Types.ObjectId().toString();
+      const res = await request(app.getHttpServer())
+        .get(`/api/products/${notExistsProductId}`)
+        .expect(200);
+      expect(res.body.product).toBeFalsy();
+    });
+
+    test('등록된 상품 id로 상세 조회', async () => {
+      const productId = product._id.toString();
+      const res = await request(app.getHttpServer())
+        .get(`/api/products/${productId}`)
+        .expect(200);
+
+      expect(res.body.product.id).toEqual(productId);
+      expect(res.body.product.name).toEqual(product.name);
+      expect(res.body.product.price).toEqual(product.price);
+      expect(res.body.product.country).toEqual(product.country);
+      expect(res.body.product.deadline).toEqual(
+        localDateTimeToString(product.deadline),
+      );
+      expect(res.body.product.market.id).toEqual(market._id.toString());
+      expect(res.body.product.market.name).toEqual(market.name);
+      expect(res.body.product.market.email).toEqual(market.email);
+      expect(res.body.product.market.phone).toEqual(market.phone);
     });
   });
 });
