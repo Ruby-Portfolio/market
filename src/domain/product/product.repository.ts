@@ -9,7 +9,7 @@ export class ProductRepository {
     @InjectModel(Product.name) private readonly productModel: Model<Product>,
   ) {}
 
-  async create(product: Product): Promise<Product> {
+  async create(product: Product): Promise<Product & { _id: Types.ObjectId }> {
     return await this.productModel.create(product);
   }
 

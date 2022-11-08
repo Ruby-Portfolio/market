@@ -16,7 +16,7 @@ export class ProductService {
   async createProduct(
     { name, price, stock, deadline, market }: CreateProductDto,
     userId: Types.ObjectId,
-  ) {
+  ): Promise<Product & { _id: Types.ObjectId }> {
     const existsMarket = await this.marketRepository.findByMarketIdAndUserId(
       market,
       userId,
