@@ -15,12 +15,14 @@ import { Country } from '../../../../domain/common/enums/Country';
 import { Market } from '../../../../domain/market/market.schema';
 import { Category } from '../../../../domain/common/enums/Category';
 import { Product } from '../../../../domain/product/product.schema';
+import { Types } from 'mongoose';
 
 describe('ProductRepository', () => {
   let app: NestFastifyApplication;
   let userRepository: UserRepository;
   let marketRepository: MarketRepository;
   let productRepository: ProductRepository;
+  let market: Market & { _id: Types.ObjectId };
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -41,28 +43,31 @@ describe('ProductRepository', () => {
     userRepository = module.get<UserRepository>(UserRepository);
     marketRepository = module.get<MarketRepository>(MarketRepository);
     productRepository = module.get<ProductRepository>(ProductRepository);
+
+    await productRepository.deleteAll();
+    await marketRepository.deleteAll();
+    await userRepository.deleteAll();
+
+    const hashedPassword = await bcrypt.hash('qwer1234', 12);
+    const user = await userRepository.create({
+      email: 'ruby@gmail.com',
+      password: hashedPassword,
+      name: 'ruby11',
+      phone: '010-1111-2222',
+    } as User);
+    market = await marketRepository.create({
+      name: '허밍 플루트',
+      email: 'flute@naver.com',
+      phone: '01011112222',
+      country: Country.USA,
+      user: user._id,
+    } as Market);
   });
 
   describe('findBySearch - 검색을 통해 상품 목록 조회', () => {
     beforeAll(async () => {
       await productRepository.deleteAll();
-      await marketRepository.deleteAll();
-      await userRepository.deleteAll();
 
-      const hashedPassword = await bcrypt.hash('qwer1234', 12);
-      const user = await userRepository.create({
-        email: 'ruby@gmail.com',
-        password: hashedPassword,
-        name: 'ruby11',
-        phone: '010-1111-2222',
-      } as User);
-      const market = await marketRepository.create({
-        name: '허밍 플루트',
-        email: 'flute@naver.com',
-        phone: '01011112222',
-        country: Country.USA,
-        user: user._id,
-      } as Market);
       for (let i = 0; i < 12; i++) {
         await productRepository.create({
           name: `루비 플루트${i}`,
@@ -245,6 +250,38 @@ describe('ProductRepository', () => {
         const result = await productRepository.findBySearch(searchProducts);
         expect(result.length).toEqual(2);
       });
+    });
+  });
+
+  describe('findDetailInfoById - 상품 상세 조회', () => {
+    let product: Product & { _id: Types.ObjectId };
+    beforeAll(async () => {
+      await productRepository.deleteAll();
+
+      product = await productRepository.create({
+        name: '루비 플루트$',
+        price: 100000000,
+        stock: 10,
+        category: Category.HOBBY,
+        country: market.country,
+        deadline: new Date(`2022-11-20 10:00`),
+        market: market._id,
+      } as Product);
+    });
+
+    test('존재하지 않는 상품 id로 상품 상세 조회', async () => {
+      const findProduct = await productRepository.findDetailInfoById(
+        new Types.ObjectId(),
+      );
+
+      expect(findProduct).toBeFalsy();
+    });
+    test('상품 id로 상품 상세 조회', async () => {
+      const findProduct = await productRepository.findDetailInfoById(
+        product._id,
+      );
+
+      expect(findProduct._id).toEqual(product._id);
     });
   });
 });

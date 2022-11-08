@@ -46,6 +46,6 @@ export class ProductService {
   async getProduct(
     productId: Types.ObjectId,
   ): Promise<Product & { _id: Types.ObjectId }> {
-    return this.productRepository.findById(productId);
+    return this.productRepository.findDetailInfoById(productId);
   }
 }

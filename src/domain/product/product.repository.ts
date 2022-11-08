@@ -18,7 +18,7 @@ export class ProductRepository {
     return this.productModel.create(product);
   }
 
-  async findById(
+  async findDetailInfoById(
     productId: Types.ObjectId,
   ): Promise<Product & { _id: Types.ObjectId }> {
     return this.productModel.findById(productId).populate('market').exec();
