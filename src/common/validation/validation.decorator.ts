@@ -1,6 +1,6 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
-import { Country } from '../../domain/enums/Country';
-import { Category } from '../../domain/enums/Category';
+import { Country } from '../../domain/common/enums/Country';
+import { Category } from '../../domain/common/enums/Category';
 
 export function IsId(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
@@ -107,6 +107,26 @@ export function IsCategory(
           }
 
           return Object.values(Category).includes(value);
+        },
+      },
+    });
+  };
+}
+
+export function IsPage(validationOptions?: ValidationOptions) {
+  return function (object: Object, propertyName: string) {
+    registerDecorator({
+      name: 'isId',
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      validator: {
+        validate(value: any) {
+          if (typeof value !== 'number' || isNaN(value)) {
+            return false;
+          }
+
+          return value > 0;
         },
       },
     });

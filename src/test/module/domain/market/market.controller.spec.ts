@@ -13,7 +13,7 @@ import { sessionConfig } from '../../../../module/auth/auth.session.config';
 import { User } from '../../../../domain/user/user.schema';
 import { CommonErrorMessage } from '../../../../common/error/common.message';
 import { MarketErrorMessage } from '../../../../domain/market/market.message';
-import { Country } from '../../../../domain/enums/Country';
+import { Country } from '../../../../domain/common/enums/Country';
 
 describe('MarketController', () => {
   let app: NestFastifyApplication;

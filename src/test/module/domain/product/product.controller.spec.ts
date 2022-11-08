@@ -17,8 +17,8 @@ import { User } from '../../../../domain/user/user.schema';
 import { Market } from '../../../../domain/market/market.schema';
 import { MarketErrorMessage } from '../../../../domain/market/market.message';
 import { ProductErrorMessage } from '../../../../domain/product/product.message';
-import { Country } from '../../../../domain/enums/Country';
-import { Category } from '../../../../domain/enums/Category';
+import { Country } from '../../../../domain/common/enums/Country';
+import { Category } from '../../../../domain/common/enums/Category';
 import { CommonErrorMessage } from '../../../../common/error/common.message';
 
 describe('ProductController', () => {
