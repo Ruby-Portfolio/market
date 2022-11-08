@@ -17,6 +17,9 @@ import { User } from '../../../../domain/user/user.schema';
 import { Market } from '../../../../domain/market/market.schema';
 import { MarketErrorMessage } from '../../../../domain/market/market.message';
 import { ProductErrorMessage } from '../../../../domain/product/product.message';
+import { Country } from '../../../../domain/enums/Country';
+import { Category } from '../../../../domain/enums/Category';
+import { CommonErrorMessage } from '../../../../common/error/common.message';
 
 describe('ProductController', () => {
   let app: NestFastifyApplication;
@@ -69,12 +72,7 @@ describe('ProductController', () => {
         name: '허밍 플루트',
         email: 'flute@naver.com',
         phone: '01011112222',
-        address: {
-          country: '대한민국',
-          city: '서울',
-          street: '종로',
-          zipcode: '11111',
-        },
+        country: Country.USA,
         user: user._id,
       } as Market);
     });
@@ -87,6 +85,7 @@ describe('ProductController', () => {
           price: 20000000,
           stock: 5,
           deadline: new Date(),
+          category: Category.HOBBY.toString(),
           market: market._id,
         })
         .expect(403);
@@ -113,6 +112,7 @@ describe('ProductController', () => {
               price: 20000000,
               stock: 5,
               deadline: '2022-11-08 10:00',
+              category: Category.HOBBY.toString(),
               market: new Types.ObjectId(),
             })
             .expect(404);
@@ -126,6 +126,7 @@ describe('ProductController', () => {
               name: '',
               price: null,
               stock: null,
+              category: '랜덤카테고리',
               deadline: '2022-02-02 10:66',
               market: 123,
             })
@@ -133,12 +134,15 @@ describe('ProductController', () => {
 
           console.log(err.body.message);
 
-          expect(err.body.message.length).toEqual(5);
+          expect(err.body.message.length).toEqual(6);
           expect(err.body.message).toContain(ProductErrorMessage.EMPTY_NAME);
           expect(err.body.message).toContain(ProductErrorMessage.INVALID_PRICE);
           expect(err.body.message).toContain(ProductErrorMessage.INVALID_STOCK);
           expect(err.body.message).toContain(
             ProductErrorMessage.INVALID_DEADLINE,
+          );
+          expect(err.body.message).toContain(
+            CommonErrorMessage.INVALID_CATEGORY,
           );
           expect(err.body.message).toContain(
             MarketErrorMessage.INVALID_MARKET_ID,
@@ -153,6 +157,7 @@ describe('ProductController', () => {
             name: '플루트',
             price: 100000000,
             stock: 10,
+            category: Category.HOBBY.toString(),
             deadline: '2022-11-08 10:00',
             market: market._id,
           })

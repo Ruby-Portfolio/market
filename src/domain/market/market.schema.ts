@@ -27,7 +27,7 @@ export class Market extends Document {
   @Prop({ required: true })
   phone: string;
 
-  @IsCountry({ message: MarketErrorMessage.EMPTY_COUNTRY })
+  @IsCountry({ message: CommonErrorMessage.INVALID_COUNTRY })
   @Prop()
   country: Country;
 

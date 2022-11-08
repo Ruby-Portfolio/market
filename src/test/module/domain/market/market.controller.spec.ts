@@ -97,7 +97,7 @@ describe('MarketController', () => {
         expect(err.body.message).toContain(MarketErrorMessage.EMPTY_NAME);
         expect(err.body.message).toContain(CommonErrorMessage.INVALID_PHONE);
         expect(err.body.message).toContain(CommonErrorMessage.INVALID_EMAIL);
-        expect(err.body.message).toContain(MarketErrorMessage.EMPTY_COUNTRY);
+        expect(err.body.message).toContain(CommonErrorMessage.INVALID_COUNTRY);
       });
 
       test('마켓 등록 성공시 201 응답', async () => {

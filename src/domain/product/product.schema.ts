@@ -2,11 +2,14 @@ import { Document, SchemaOptions, SchemaTypes, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsNumber } from 'class-validator';
 import {
+  IsCategory,
   IsId,
   IsNotBlankString,
 } from '../../common/validation/validation.decorator';
 import { ProductErrorMessage } from './product.message';
 import { MarketErrorMessage } from '../market/market.message';
+import { Category } from '../enums/Category';
+import { CommonErrorMessage } from '../../common/error/common.message';
 
 const options: SchemaOptions = {
   timestamps: true,
@@ -25,6 +28,10 @@ export class Product extends Document {
   @IsNumber({}, { message: ProductErrorMessage.INVALID_STOCK })
   @Prop({ required: true })
   stock: number;
+
+  @IsCategory({ message: CommonErrorMessage.INVALID_CATEGORY })
+  @Prop({ required: true })
+  category: Category;
 
   @Prop({ required: true })
   deadline: Date;

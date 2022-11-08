@@ -1,5 +1,6 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 import { Country } from '../../domain/enums/Country';
+import { Category } from '../../domain/enums/Category';
 
 export function IsId(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
@@ -70,6 +71,22 @@ export function IsCountry(validationOptions?: ValidationOptions) {
       validator: {
         validate(value: any) {
           return Object.values(Country).includes(value);
+        },
+      },
+    });
+  };
+}
+
+export function IsCategory(validationOptions?: ValidationOptions) {
+  return function (object: Object, propertyName: string) {
+    registerDecorator({
+      name: 'isName',
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      validator: {
+        validate(value: any) {
+          return Object.values(Category).includes(value);
         },
       },
     });
