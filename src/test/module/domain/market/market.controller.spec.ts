@@ -44,7 +44,7 @@ describe('MarketController', () => {
   describe('POST /api/markets - 마켓 등록(셀러 입점)', () => {
     const email = 'ruby@gmail.com';
     const password = 'qwer1234';
-    beforeEach(async () => {
+    beforeAll(async () => {
       await marketRepository.deleteAll();
       await userRepository.deleteAll();
       const hashedPassword = await bcrypt.hash(password, 12);
@@ -62,7 +62,7 @@ describe('MarketController', () => {
         .send({
           name: '허밍 플루트',
           email: 'flute@naver.com',
-          phone: '01011112222',
+          phone: '010-1111-2222',
           country: '대한민국',
           city: '서울',
           street: '종로',
@@ -84,7 +84,7 @@ describe('MarketController', () => {
           .expect(201);
       });
 
-      test('마켓 등록 실패시 400 응답', async () => {
+      test('마켓 등록시 필요한 값들이 형식에 맞지 않을 경우 400 응답', async () => {
         const err = await agent
           .post('/api/markets')
           .send({

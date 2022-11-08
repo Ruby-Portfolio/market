@@ -1,6 +1,6 @@
 import { Document, SchemaOptions, SchemaTypes, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsDate, IsNumber } from 'class-validator';
+import { IsNumber } from 'class-validator';
 import {
   IsId,
   IsNotBlankString,
@@ -26,7 +26,6 @@ export class Product extends Document {
   @Prop({ required: true })
   stock: number;
 
-  @IsDate({ message: ProductErrorMessage.INVALID_DEADLINE })
   @Prop({ required: true })
   deadline: Date;
 

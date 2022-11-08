@@ -35,3 +35,28 @@ export function IsNotBlankString(validationOptions?: ValidationOptions) {
     });
   };
 }
+
+export function IsLocalDate(validationOptions?: ValidationOptions) {
+  return function (object: Object, propertyName: string) {
+    registerDecorator({
+      name: 'isName',
+      target: object.constructor,
+      propertyName: propertyName,
+      options: validationOptions,
+      validator: {
+        validate(value: any) {
+          if (typeof value !== 'string') {
+            return false;
+          }
+          const regex = new RegExp(
+            /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12]\d|3[01]) ([01]\d|2[0-3]):([0-5]\d)$/,
+          );
+
+          return regex.test(value);
+
+          // return !!value.replace(/ /g, '');
+        },
+      },
+    });
+  };
+}

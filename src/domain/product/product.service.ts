@@ -30,7 +30,7 @@ export class ProductService {
       name,
       price,
       stock,
-      deadline,
+      deadline: new Date(deadline),
       market,
     } as Product);
   }

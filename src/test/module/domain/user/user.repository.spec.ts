@@ -31,7 +31,6 @@ describe('UserRepository', () => {
     const email = 'ruby@gmail.com';
     beforeEach(async () => {
       await userRepository.deleteAll();
-
       await userRepository.create({
         email,
         password: 'asd123asd',

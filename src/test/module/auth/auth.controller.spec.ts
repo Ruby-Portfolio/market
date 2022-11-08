@@ -42,7 +42,6 @@ describe('AuthController', () => {
     const email = 'ruby@gmail.com';
     beforeAll(async () => {
       await userRepository.deleteAll();
-
       await userRepository.create({
         email,
         password: 'asd123asd',
@@ -143,23 +142,25 @@ describe('AuthController', () => {
       });
     });
 
-    test('회원 가입 성공', async () => {
-      return request(app.getHttpServer())
-        .post('/api/auth/signUp')
-        .send({
-          email: 'diamond@gmail.com',
-          password: 'asdfa12333',
-          name: '김루비',
-          phone: '010-1111-2222',
-        })
-        .expect(201);
+    describe('회원 가입 성공', () => {
+      test('회원 가입 성공', async () => {
+        return request(app.getHttpServer())
+          .post('/api/auth/signUp')
+          .send({
+            email: 'diamond@gmail.com',
+            password: 'asdfa12333',
+            name: '김루비',
+            phone: '010-1111-2222',
+          })
+          .expect(201);
+      });
     });
   });
 
   describe('POST /api/auth/login - 로그인', () => {
     const email = 'ruby@gmail.com';
     const password = 'qwer1234';
-    beforeEach(async () => {
+    beforeAll(async () => {
       await userRepository.deleteAll();
 
       const hashedPassword = await bcrypt.hash(password, 12);
@@ -171,6 +172,7 @@ describe('AuthController', () => {
         phone: '010-1111-2222',
       } as User);
     });
+
     describe('로그인 실패', () => {
       test('등록되지 않은 이메일로 로그인 요청시 401 응답', async () => {
         const err = await request(app.getHttpServer())
@@ -197,14 +199,16 @@ describe('AuthController', () => {
       });
     });
 
-    test('로그인 성공', async () => {
-      return request(app.getHttpServer())
-        .post('/api/auth/login')
-        .send({
-          email,
-          password,
-        })
-        .expect(201);
+    describe('로그인 성공', () => {
+      test('로그인 성공', async () => {
+        return request(app.getHttpServer())
+          .post('/api/auth/login')
+          .send({
+            email,
+            password,
+          })
+          .expect(201);
+      });
     });
   });
 
@@ -212,7 +216,7 @@ describe('AuthController', () => {
     const email = 'ruby@gmail.com';
     const password = 'qwer1234';
     let agent;
-    beforeAll(async () => {
+    beforeEach(async () => {
       await userRepository.deleteAll();
 
       const hashedPassword = await bcrypt.hash(password, 12);
