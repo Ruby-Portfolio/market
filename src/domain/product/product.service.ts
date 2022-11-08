@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ProductRepository } from './product.repository';
 import { Product } from './product.schema';
 import { Types } from 'mongoose';
-import { CreateProductDto } from './product.request.dto';
+import { CreateProductDto, SearchProductsDto } from './product.request.dto';
 import { MarketRepository } from '../market/market.repository';
 import { NotFoundMarketException } from '../market/market.exception';
 
@@ -14,7 +14,7 @@ export class ProductService {
   ) {}
 
   async createProduct(
-    { name, price, stock, deadline, market }: CreateProductDto,
+    { name, price, stock, category, deadline, market }: CreateProductDto,
     userId: Types.ObjectId,
   ): Promise<Product & { _id: Types.ObjectId }> {
     const existsMarket = await this.marketRepository.findByMarketIdAndUserId(
@@ -30,8 +30,14 @@ export class ProductService {
       name,
       price,
       stock,
+      category,
+      country: existsMarket.country,
       deadline: new Date(deadline),
       market,
     } as Product);
+  }
+
+  async getProducts(searchProduct: SearchProductsDto) {
+    return this.productRepository.findBySearch(searchProduct);
   }
 }

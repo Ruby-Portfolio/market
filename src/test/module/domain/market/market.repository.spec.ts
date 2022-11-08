@@ -9,6 +9,7 @@ import { MarketRepository } from '../../../../domain/market/market.repository';
 import { Market } from '../../../../domain/market/market.schema';
 import { MarketModule } from '../../../../domain/market/market.module';
 import { Types } from 'mongoose';
+import { Country } from '../../../../domain/common/enums/Country';
 
 describe('MarketRepository', () => {
   let app: NestFastifyApplication;
@@ -53,12 +54,7 @@ describe('MarketRepository', () => {
         name: '허밍 플루트',
         email: 'flute@naver.com',
         phone: '01011112222',
-        address: {
-          country: '대한민국',
-          city: '서울',
-          street: '종로',
-          zipcode: '11111',
-        },
+        country: Country.USA,
         user: user._id,
       } as Market);
     });

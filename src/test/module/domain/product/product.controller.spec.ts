@@ -17,12 +17,20 @@ import { User } from '../../../../domain/user/user.schema';
 import { Market } from '../../../../domain/market/market.schema';
 import { MarketErrorMessage } from '../../../../domain/market/market.message';
 import { ProductErrorMessage } from '../../../../domain/product/product.message';
+import { Country } from '../../../../domain/common/enums/Country';
+import { Category } from '../../../../domain/common/enums/Category';
+import { CommonErrorMessage } from '../../../../common/error/common.message';
+import { Product } from '../../../../domain/product/product.schema';
 
 describe('ProductController', () => {
   let app: NestFastifyApplication;
   let userRepository: UserRepository;
   let marketRepository: MarketRepository;
   let productRepository: ProductRepository;
+  const email = 'ruby@gmail.com';
+  const password = 'qwer1234';
+  let user: User & { _id: Types.ObjectId };
+  let market: Market & { _id: Types.ObjectId };
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -46,39 +54,28 @@ describe('ProductController', () => {
     userRepository = module.get<UserRepository>(UserRepository);
     marketRepository = module.get<MarketRepository>(MarketRepository);
     productRepository = module.get<ProductRepository>(ProductRepository);
+
+    await productRepository.deleteAll();
+    await marketRepository.deleteAll();
+    await userRepository.deleteAll();
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    user = await userRepository.create({
+      email,
+      password: hashedPassword,
+      name: 'ruby11',
+      phone: '010-1111-2222',
+    } as User);
+    market = await marketRepository.create({
+      name: '허밍 플루트',
+      email: 'flute@naver.com',
+      phone: '01011112222',
+      country: Country.USA,
+      user: user._id,
+    } as Market);
   });
 
   describe('POST /api/products - 상품 등록', () => {
-    const email = 'ruby@gmail.com';
-    const password = 'qwer1234';
-    let user: User & { _id: Types.ObjectId };
-    let market: Market & { _id: Types.ObjectId };
-    beforeAll(async () => {
-      await productRepository.deleteAll();
-      await marketRepository.deleteAll();
-      await userRepository.deleteAll();
-
-      const hashedPassword = await bcrypt.hash(password, 12);
-      user = await userRepository.create({
-        email,
-        password: hashedPassword,
-        name: 'ruby11',
-        phone: '010-1111-2222',
-      } as User);
-      market = await marketRepository.create({
-        name: '허밍 플루트',
-        email: 'flute@naver.com',
-        phone: '01011112222',
-        address: {
-          country: '대한민국',
-          city: '서울',
-          street: '종로',
-          zipcode: '11111',
-        },
-        user: user._id,
-      } as Market);
-    });
-
     test('로그인 하지 않은 상태에서 상품 등록시 403 응답', async () => {
       return request(app.getHttpServer())
         .post('/api/products')
@@ -87,6 +84,7 @@ describe('ProductController', () => {
           price: 20000000,
           stock: 5,
           deadline: new Date(),
+          category: Category.HOBBY.toString(),
           market: market._id,
         })
         .expect(403);
@@ -113,6 +111,7 @@ describe('ProductController', () => {
               price: 20000000,
               stock: 5,
               deadline: '2022-11-08 10:00',
+              category: Category.HOBBY.toString(),
               market: new Types.ObjectId(),
             })
             .expect(404);
@@ -126,6 +125,7 @@ describe('ProductController', () => {
               name: '',
               price: null,
               stock: null,
+              category: '랜덤카테고리',
               deadline: '2022-02-02 10:66',
               market: 123,
             })
@@ -133,12 +133,15 @@ describe('ProductController', () => {
 
           console.log(err.body.message);
 
-          expect(err.body.message.length).toEqual(5);
+          expect(err.body.message.length).toEqual(6);
           expect(err.body.message).toContain(ProductErrorMessage.EMPTY_NAME);
           expect(err.body.message).toContain(ProductErrorMessage.INVALID_PRICE);
           expect(err.body.message).toContain(ProductErrorMessage.INVALID_STOCK);
           expect(err.body.message).toContain(
             ProductErrorMessage.INVALID_DEADLINE,
+          );
+          expect(err.body.message).toContain(
+            CommonErrorMessage.INVALID_CATEGORY,
           );
           expect(err.body.message).toContain(
             MarketErrorMessage.INVALID_MARKET_ID,
@@ -153,6 +156,7 @@ describe('ProductController', () => {
             name: '플루트',
             price: 100000000,
             stock: 10,
+            category: Category.HOBBY.toString(),
             deadline: '2022-11-08 10:00',
             market: market._id,
           })
@@ -160,6 +164,77 @@ describe('ProductController', () => {
 
         const products = await productRepository.findAll();
         expect(products.length).toEqual(1);
+      });
+    });
+  });
+
+  describe('GET /api/products - 상품 목록 검색 조회', () => {
+    beforeAll(async () => {
+      await productRepository.deleteAll();
+
+      for (let i = 0; i < 12; i++) {
+        await productRepository.create({
+          name: `루비 플루트${i}`,
+          price: 100000000,
+          stock: 10,
+          category: Category.HOBBY,
+          country: market.country,
+          deadline: new Date(`2022-11-08 ${10 + i}:00`),
+          market: market._id,
+        } as Product);
+      }
+    });
+
+    test('상품 조회시 검색 조건 값들이 형식에 맞지 않을 경우 400 응답', async () => {
+      const err = await request(app.getHttpServer())
+        .get('/api/products')
+        .query({
+          country: '알수없는국가',
+          category: '존재하지않는카테고리',
+          page: 0,
+          keyword: ['asd', 'asdsad'],
+        })
+        .expect(400);
+
+      expect(err.body.message.length).toEqual(4);
+      expect(err.body.message).toContain(CommonErrorMessage.INVALID_COUNTRY);
+      expect(err.body.message).toContain(CommonErrorMessage.INVALID_CATEGORY);
+      expect(err.body.message).toContain(CommonErrorMessage.INVALID_PAGE);
+      expect(err.body.message).toContain(CommonErrorMessage.INVALID_KEYWORD);
+    });
+
+    describe('상품 목록 검색 성공', () => {
+      test('검색 조건을 입력하지 않을 경우 전체 상품 목록을 대상으로 조회', async () => {
+        const res = await request(app.getHttpServer())
+          .get('/api/products')
+          .query({})
+          .expect(200);
+
+        expect(res.body.products.length).toEqual(10);
+      });
+
+      test('조건에 맞는 상품 목록 조회', async () => {
+        const res = await request(app.getHttpServer())
+          .get('/api/products')
+          .query({
+            country: Country.USA.toString(),
+            category: Category.HOBBY.toString(),
+            keyword: '플루트1',
+          })
+          .expect(200);
+
+        expect(res.body.products.length).toEqual(3);
+      });
+
+      test('페이징 조회', async () => {
+        const res = await request(app.getHttpServer())
+          .get('/api/products')
+          .query({
+            page: 2,
+          })
+          .expect(200);
+
+        expect(res.body.products.length).toEqual(2);
       });
     });
   });
