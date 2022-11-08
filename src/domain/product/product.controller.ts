@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Query,
   Res,
@@ -14,7 +15,7 @@ import { CreateProductDto, SearchProductsDto } from './product.request.dto';
 import { SessionUser } from '../../module/auth/auth.decorator';
 import { User } from '../user/user.schema';
 import { Types } from 'mongoose';
-import { ProductsResponse } from './product.response.dto';
+import { ProductResponse, ProductsResponse } from './product.response.dto';
 
 @Controller('products')
 export class ProductController {
@@ -37,5 +38,13 @@ export class ProductController {
   ): Promise<ProductsResponse> {
     const products = await this.productService.getProducts(searchProducts);
     return new ProductsResponse(products);
+  }
+
+  @Get('/:productId')
+  async getProduct(
+    @Param('productId') productId: Types.ObjectId,
+  ): Promise<ProductResponse> {
+    const product = await this.productService.getProduct(productId);
+    return new ProductResponse(product);
   }
 }

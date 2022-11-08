@@ -37,7 +37,15 @@ export class ProductService {
     } as Product);
   }
 
-  async getProducts(searchProduct: SearchProductsDto) {
+  async getProducts(
+    searchProduct: SearchProductsDto,
+  ): Promise<(Product & { _id: Types.ObjectId })[]> {
     return this.productRepository.findBySearch(searchProduct);
+  }
+
+  async getProduct(
+    productId: Types.ObjectId,
+  ): Promise<Product & { _id: Types.ObjectId }> {
+    return this.productRepository.findById(productId);
   }
 }

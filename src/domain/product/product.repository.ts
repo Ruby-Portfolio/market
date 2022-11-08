@@ -18,7 +18,18 @@ export class ProductRepository {
     return this.productModel.create(product);
   }
 
-  async findBySearch({ country, category, keyword, page }: SearchProductsDto) {
+  async findById(
+    productId: Types.ObjectId,
+  ): Promise<Product & { _id: Types.ObjectId }> {
+    return this.productModel.findById(productId).populate('market').exec();
+  }
+
+  async findBySearch({
+    country,
+    category,
+    keyword,
+    page,
+  }: SearchProductsDto): Promise<(Product & { _id: Types.ObjectId })[]> {
     const skip = (page - 1) * this.PAGE_SIZE;
 
     const query = this.productModel.find();
@@ -37,7 +48,8 @@ export class ProductRepository {
     return query
       .skip(skip)
       .limit(this.PAGE_SIZE)
-      .sort({ _id: PagingConstant.DESC });
+      .sort({ _id: PagingConstant.DESC })
+      .exec();
   }
 
   async deleteAll() {
