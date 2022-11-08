@@ -64,7 +64,7 @@ export function IsLocalDate(validationOptions?: ValidationOptions) {
 export function IsCountry(
   validationOptions?: ValidationOptions & { nullable?: boolean },
 ) {
-  const isEmpty = (value) => {
+  const isEmpty = (value): boolean => {
     return validationOptions.nullable && !value;
   };
 
@@ -90,7 +90,7 @@ export function IsCountry(
 export function IsCategory(
   validationOptions?: ValidationOptions & { nullable?: boolean },
 ) {
-  const isEmpty = (value) => {
+  const isEmpty = (value): boolean => {
     return validationOptions.nullable && !value;
   };
 
@@ -113,7 +113,16 @@ export function IsCategory(
   };
 }
 
-export function IsPage(validationOptions?: ValidationOptions) {
+export function IsPage(
+  validationOptions?: ValidationOptions & { nullable?: boolean },
+) {
+  const isEmpty = (value): boolean => {
+    return validationOptions.nullable && !value && value !== 0;
+  };
+
+  const isNumber = (value): boolean => {
+    return typeof value === 'number' && !isNaN(value) && value > 0;
+  };
   return function (object: Object, propertyName: string) {
     registerDecorator({
       name: 'isId',
@@ -122,11 +131,11 @@ export function IsPage(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any) {
-          if (typeof value !== 'number' || isNaN(value)) {
-            return false;
+          if (isEmpty(value)) {
+            return true;
           }
 
-          return value > 0;
+          return isNumber(value);
         },
       },
     });

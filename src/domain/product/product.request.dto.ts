@@ -10,7 +10,7 @@ import { ProductErrorMessage } from './product.message';
 import { Country } from '../common/enums/Country';
 import { Category } from '../common/enums/Category';
 import { CommonErrorMessage } from '../../common/error/common.message';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateProductDto extends PickType(Product, [
   'name',
@@ -28,8 +28,9 @@ export class SearchProductsDto {
   country?: Country;
   @IsCategory({ message: CommonErrorMessage.INVALID_CATEGORY, nullable: true })
   category?: Category;
-  @IsPage({ message: CommonErrorMessage.INVALID_PAGE })
-  page?: number;
+  @IsPage({ message: CommonErrorMessage.INVALID_PAGE, nullable: true })
+  page?: number = 1;
+  @IsOptional()
   @IsString({ message: CommonErrorMessage.INVALID_KEYWORD })
   keyword?: string;
 }
