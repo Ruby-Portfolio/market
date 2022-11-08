@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ProductRepository } from './product.repository';
 import { Product } from './product.schema';
 import { Types } from 'mongoose';
-import { CreateProductDto } from './product.request.dto';
+import { CreateProductDto, SearchProductsDto } from './product.request.dto';
 import { MarketRepository } from '../market/market.repository';
 import { NotFoundMarketException } from '../market/market.exception';
 
@@ -31,8 +31,13 @@ export class ProductService {
       price,
       stock,
       category,
+      country: existsMarket.country,
       deadline: new Date(deadline),
       market,
     } as Product);
+  }
+
+  async getProducts(searchProduct: SearchProductsDto) {
+    return this.productRepository.findBySearch(searchProduct);
   }
 }
