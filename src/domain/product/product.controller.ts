@@ -22,14 +22,13 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @UseGuards(AuthenticatedGuard)
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   async postProduct(
     @Body() createProduct: CreateProductDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
-    @Res() res,
   ) {
-    await this.productService.createProduct(createProduct, user._id);
-    res.status(HttpStatus.CREATED).send();
+    return this.productService.createProduct(createProduct, user._id);
   }
 
   @Get()

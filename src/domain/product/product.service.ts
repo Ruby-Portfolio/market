@@ -14,11 +14,11 @@ export class ProductService {
   ) {}
 
   async createProduct(
-    { name, price, stock, category, deadline, market }: CreateProductDto,
+    createProduct: CreateProductDto,
     userId: Types.ObjectId,
   ): Promise<Product & { _id: Types.ObjectId }> {
     const existsMarket = await this.marketRepository.findByMarketIdAndUserId(
-      market,
+      createProduct.market,
       userId,
     );
 
@@ -26,15 +26,14 @@ export class ProductService {
       throw new NotFoundMarketException();
     }
 
-    return this.productRepository.create({
-      name,
-      price,
-      stock,
-      category,
+    const product = {
+      ...createProduct,
+      deadline: new Date(createProduct.deadline),
       country: existsMarket.country,
-      deadline: new Date(deadline),
-      market,
-    } as Product);
+      market: existsMarket._id,
+    } as Product;
+
+    return this.productRepository.create(product);
   }
 
   async getProducts(
