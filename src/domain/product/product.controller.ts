@@ -52,11 +52,17 @@ export class ProductController {
     return new ProductResponse(product);
   }
 
+  @UseGuards(AuthenticatedGuard)
   @Patch('/:productId')
   async patchProduct(
     @Param('productId') productId: Types.ObjectId,
     @Body() updateProduct: UpdateProductDto,
+    @SessionUser() user: User & { _id: Types.ObjectId },
   ) {
-    return this.productService.updateProduct(productId, updateProduct);
+    return this.productService.updateProduct(
+      productId,
+      user._id,
+      updateProduct,
+    );
   }
 }

@@ -9,6 +9,7 @@ import {
 } from './product.request.dto';
 import { MarketRepository } from '../market/market.repository';
 import { NotFoundMarketException } from '../market/market.exception';
+import { NotFoundProductException } from './product.exception';
 
 @Injectable()
 export class ProductService {
@@ -55,8 +56,18 @@ export class ProductService {
 
   async updateProduct(
     productId: Types.ObjectId,
+    userId: Types.ObjectId,
     updateProduct: UpdateProductDto,
   ) {
+    const existsProduct = await this.productRepository.findByProductIdAndUserId(
+      productId,
+      userId,
+    );
+
+    if (!existsProduct) {
+      throw new NotFoundProductException();
+    }
+
     const product = {
       ...updateProduct,
       deadline: new Date(updateProduct.deadline),
