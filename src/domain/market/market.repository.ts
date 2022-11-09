@@ -17,7 +17,7 @@ export class MarketRepository {
     marketId: Types.ObjectId,
     userId: Types.ObjectId,
   ): Promise<Market & { _id: Types.ObjectId }> {
-    return this.marketModel.findOne({ _id: marketId, user: userId }).exec();
+    return this.marketModel.findOne({ _id: marketId, userId: userId }).exec();
   }
 
   async deleteAll() {

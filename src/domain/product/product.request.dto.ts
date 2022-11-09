@@ -17,7 +17,7 @@ export class CreateProductDto extends PickType(Product, [
   'price',
   'stock',
   'category',
-  'market',
+  'marketId',
 ] as const) {
   @IsLocalDate({ message: ProductErrorMessage.INVALID_DEADLINE })
   deadline: string;
@@ -33,4 +33,14 @@ export class SearchProductsDto {
   @IsOptional()
   @IsString({ message: CommonErrorMessage.INVALID_KEYWORD })
   keyword?: string;
+}
+
+export class UpdateProductDto extends PickType(Product, [
+  'name',
+  'price',
+  'stock',
+  'category',
+] as const) {
+  @IsLocalDate({ message: ProductErrorMessage.INVALID_DEADLINE })
+  deadline: string;
 }

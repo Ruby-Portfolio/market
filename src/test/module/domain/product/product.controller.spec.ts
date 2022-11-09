@@ -72,7 +72,7 @@ describe('ProductController', () => {
       email: 'flute@naver.com',
       phone: '01011112222',
       country: Country.USA,
-      user: user._id,
+      userId: user._id,
     } as Market);
   });
 
@@ -113,7 +113,7 @@ describe('ProductController', () => {
               stock: 5,
               deadline: '2022-11-08 10:00',
               category: Category.HOBBY.toString(),
-              market: new Types.ObjectId(),
+              marketId: new Types.ObjectId(),
             })
             .expect(404);
 
@@ -128,11 +128,9 @@ describe('ProductController', () => {
               stock: null,
               category: '랜덤카테고리',
               deadline: '2022-02-02 10:66',
-              market: 123,
+              marketId: 123,
             })
             .expect(400);
-
-          console.log(err.body.message);
 
           expect(err.body.message.length).toEqual(6);
           expect(err.body.message).toContain(ProductErrorMessage.EMPTY_NAME);
@@ -159,7 +157,7 @@ describe('ProductController', () => {
             stock: 10,
             category: Category.HOBBY.toString(),
             deadline: '2022-11-08 10:00',
-            market: market._id,
+            marketId: market._id,
           })
           .expect(201);
 
@@ -181,7 +179,8 @@ describe('ProductController', () => {
           category: Category.HOBBY,
           country: market.country,
           deadline: new Date(`2022-11-08 ${10 + i}:00`),
-          market: market._id,
+          marketId: market._id,
+          userId: user._id,
         } as Product);
       }
     });
@@ -252,7 +251,8 @@ describe('ProductController', () => {
         category: Category.HOBBY,
         country: market.country,
         deadline: new Date(`2022-11-20 10:00`),
-        market: market._id,
+        marketId: market._id,
+        userId: user._id,
       } as Product);
     });
 
@@ -281,6 +281,167 @@ describe('ProductController', () => {
       expect(res.body.product.market.name).toEqual(market.name);
       expect(res.body.product.market.email).toEqual(market.email);
       expect(res.body.product.market.phone).toEqual(market.phone);
+    });
+  });
+
+  describe('PATCH /api/products/:productId', () => {
+    let product: Product & { _id: Types.ObjectId };
+    beforeAll(async () => {
+      await productRepository.deleteAll();
+
+      product = await productRepository.create({
+        name: '루비 플루트',
+        price: 100000000,
+        stock: 10,
+        category: Category.HOBBY,
+        country: market.country,
+        deadline: new Date(`2022-11-20 10:00`),
+        marketId: market._id,
+        userId: user._id,
+      } as Product);
+    });
+
+    test('로그인 하지 않은 상태에서 상품 수정 요청시 응답 403 응답', async () => {
+      const productId = product._id.toString();
+
+      await request(app.getHttpServer())
+        .patch(`/api/products/${productId}`)
+        .send({
+          name: '루비',
+          price: 200000000,
+          stock: 20,
+          category: Category.JEWELRY,
+          deadline: localDateTimeToString(new Date()),
+        })
+        .expect(403);
+    });
+
+    describe('요청한 사용자와 셀러의 정보가 일치하지 않을 경우', () => {
+      let agent;
+      beforeEach(async () => {
+        const email = 'qwer@naver.com';
+        const password = 'asdf1234';
+        const hashedPassword = await bcrypt.hash(password, 12);
+        await userRepository.create({
+          email,
+          password: hashedPassword,
+          name: 'ruby11',
+          phone: '010-1111-2222',
+        } as User);
+
+        agent = await request.agent(app.getHttpServer());
+        await agent
+          .post('/api/auth/login')
+          .send({
+            email,
+            password,
+          })
+          .expect(201);
+      });
+
+      test('요청한 사용자와 셀러의 정보가 일치하지 않을 경우 404 응답', async () => {
+        const productId = product._id.toString();
+
+        const err = await agent
+          .patch(`/api/products/${productId}`)
+          .send({
+            name: '루비',
+            price: 200000000,
+            stock: 20,
+            category: Category.JEWELRY,
+            deadline: localDateTimeToString(new Date()),
+          })
+          .expect(404);
+
+        expect(err.body.message).toEqual(ProductErrorMessage.NOT_FOUND);
+      });
+    });
+
+    describe('로그인 상태에서 상품 정보 수정', () => {
+      let agent;
+      beforeEach(async () => {
+        agent = await request.agent(app.getHttpServer());
+        await agent
+          .post('/api/auth/login')
+          .send({
+            email,
+            password,
+          })
+          .expect(201);
+      });
+
+      describe('상품 정보 수정 실패', () => {
+        test('등록되지 않은 상품의 정보 수정 요청시 404 응답', async () => {
+          const notExistsProductId = new Types.ObjectId();
+
+          const err = await agent
+            .patch(`/api/products/${notExistsProductId}`)
+            .send({
+              name: '루비',
+              price: 200000000,
+              stock: 20,
+              category: Category.JEWELRY,
+              deadline: localDateTimeToString(new Date()),
+            })
+            .expect(404);
+
+          expect(err.body.message).toEqual(ProductErrorMessage.NOT_FOUND);
+        });
+        test('상품 정보 수정시 필요한 값들이 형식에 맞지 않을 경우 400 응답', async () => {
+          const productId = product._id.toString();
+
+          const err = await agent
+            .patch(`/api/products/${productId}`)
+            .send({
+              name: '',
+              price: null,
+              stock: null,
+              category: '임의의카테고리',
+              deadline: '2022',
+            })
+            .expect(400);
+
+          expect(err.body.message.length).toEqual(5);
+          expect(err.body.message).toContain(ProductErrorMessage.EMPTY_NAME);
+          expect(err.body.message).toContain(ProductErrorMessage.INVALID_PRICE);
+          expect(err.body.message).toContain(ProductErrorMessage.INVALID_STOCK);
+          expect(err.body.message).toContain(
+            ProductErrorMessage.INVALID_DEADLINE,
+          );
+          expect(err.body.message).toContain(
+            CommonErrorMessage.INVALID_CATEGORY,
+          );
+        });
+      });
+
+      test('상품 정보 수정 성공', async () => {
+        const productId = product._id.toString();
+
+        const updateProduct = {
+          name: '루비',
+          price: 200000000,
+          stock: 20,
+          category: Category.JEWELRY,
+          deadline: localDateTimeToString(new Date()),
+        };
+
+        await agent
+          .patch(`/api/products/${productId}`)
+          .send(updateProduct)
+          .expect(200);
+
+        const updatedProduct = await productRepository.findDetailInfoById(
+          productId,
+        );
+
+        expect(updatedProduct.name).toEqual(updateProduct.name);
+        expect(updatedProduct.price).toEqual(updateProduct.price);
+        expect(updatedProduct.stock).toEqual(updateProduct.stock);
+        expect(updatedProduct.category).toEqual(updateProduct.category);
+        expect(localDateTimeToString(updatedProduct.deadline)).toEqual(
+          updateProduct.deadline,
+        );
+      });
     });
   });
 });

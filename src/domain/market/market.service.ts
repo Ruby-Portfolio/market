@@ -17,7 +17,7 @@ export class MarketService {
       email,
       phone,
       country,
-      user: userId,
+      userId: userId,
     } as Market);
   }
 }

@@ -32,5 +32,5 @@ export const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.virtual('markets', {
   ref: 'Market',
   localField: '_id',
-  foreignField: 'user',
+  foreignField: 'userId',
 });

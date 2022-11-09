@@ -2,16 +2,21 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthenticatedGuard } from '../../module/auth/auth.guard';
 import { ProductService } from './product.service';
-import { CreateProductDto, SearchProductsDto } from './product.request.dto';
+import {
+  CreateProductDto,
+  SearchProductsDto,
+  UpdateProductDto,
+} from './product.request.dto';
 import { SessionUser } from '../../module/auth/auth.decorator';
 import { User } from '../user/user.schema';
 import { Types } from 'mongoose';
@@ -22,14 +27,13 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @UseGuards(AuthenticatedGuard)
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   async postProduct(
     @Body() createProduct: CreateProductDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
-    @Res() res,
   ) {
-    await this.productService.createProduct(createProduct, user._id);
-    res.status(HttpStatus.CREATED).send();
+    return this.productService.createProduct(createProduct, user._id);
   }
 
   @Get()
@@ -46,5 +50,19 @@ export class ProductController {
   ): Promise<ProductResponse> {
     const product = await this.productService.getProduct(productId);
     return new ProductResponse(product);
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Patch('/:productId')
+  async patchProduct(
+    @Param('productId') productId: Types.ObjectId,
+    @Body() updateProduct: UpdateProductDto,
+    @SessionUser() user: User & { _id: Types.ObjectId },
+  ) {
+    return this.productService.updateProduct(
+      productId,
+      user._id,
+      updateProduct,
+    );
   }
 }

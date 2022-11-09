@@ -6,7 +6,7 @@ import { localDateTimeToString } from '../../common/util/dateUtil';
 export class ProductResponse {
   constructor(product: Product & { _id: Types.ObjectId }) {
     if (product) {
-      const market: any = product.market;
+      const market: any = product.marketId;
       this.product = {
         id: product._id,
         name: product.name,
