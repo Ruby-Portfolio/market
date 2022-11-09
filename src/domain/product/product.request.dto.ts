@@ -11,6 +11,8 @@ import { Country } from '../common/enums/Country';
 import { Category } from '../common/enums/Category';
 import { CommonErrorMessage } from '../../common/error/common.message';
 import { IsOptional, IsString } from 'class-validator';
+import { ProductOrder } from './product.enum';
+import { IsProductOrder } from './product.validation.decorator';
 
 export class CreateProductDto extends PickType(Product, [
   'name',
@@ -28,6 +30,11 @@ export class SearchProductsDto {
   country?: Country;
   @IsCategory({ message: CommonErrorMessage.INVALID_CATEGORY, nullable: true })
   category?: Category;
+  @IsProductOrder({
+    message: ProductErrorMessage.INVALID_PRODUCT_ORDER,
+    nullable: true,
+  })
+  order?: ProductOrder;
   @IsPage({ message: CommonErrorMessage.INVALID_PAGE, nullable: true })
   page?: number = 1;
   @IsOptional()
