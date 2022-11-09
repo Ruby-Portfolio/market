@@ -22,6 +22,7 @@ import { Category } from '../../../../domain/common/enums/Category';
 import { CommonErrorMessage } from '../../../../common/error/common.message';
 import { Product } from '../../../../domain/product/product.schema';
 import { localDateTimeToString } from '../../../../common/util/dateUtil';
+import { HttpStatus } from '@nestjs/common';
 
 describe('ProductController', () => {
   let app: NestFastifyApplication;
@@ -88,7 +89,7 @@ describe('ProductController', () => {
           category: Category.HOBBY.toString(),
           market: market._id,
         })
-        .expect(403);
+        .expect(HttpStatus.FORBIDDEN);
     });
 
     describe('로그인 상태에서 상품 등록', () => {
@@ -101,7 +102,7 @@ describe('ProductController', () => {
             email,
             password,
           })
-          .expect(201);
+          .expect(HttpStatus.CREATED);
       });
       describe('상품 등록 실패', () => {
         test('등록되지 않은 마켓 Id로 상품 등록 시 404 응답', async () => {
@@ -115,7 +116,7 @@ describe('ProductController', () => {
               category: Category.HOBBY.toString(),
               marketId: new Types.ObjectId(),
             })
-            .expect(404);
+            .expect(HttpStatus.NOT_FOUND);
 
           expect(err.body.message).toEqual(MarketErrorMessage.NOT_FOUND);
         });
@@ -130,7 +131,7 @@ describe('ProductController', () => {
               deadline: '2022-02-02 10:66',
               marketId: 123,
             })
-            .expect(400);
+            .expect(HttpStatus.BAD_REQUEST);
 
           expect(err.body.message.length).toEqual(6);
           expect(err.body.message).toContain(ProductErrorMessage.EMPTY_NAME);
@@ -159,7 +160,7 @@ describe('ProductController', () => {
             deadline: '2022-11-08 10:00',
             marketId: market._id,
           })
-          .expect(201);
+          .expect(HttpStatus.CREATED);
 
         const products = await productRepository.findAll();
         expect(products.length).toEqual(1);
@@ -194,7 +195,7 @@ describe('ProductController', () => {
           page: 0,
           keyword: ['asd', 'asdsad'],
         })
-        .expect(400);
+        .expect(HttpStatus.BAD_REQUEST);
 
       expect(err.body.message.length).toEqual(4);
       expect(err.body.message).toContain(CommonErrorMessage.INVALID_COUNTRY);
@@ -208,7 +209,7 @@ describe('ProductController', () => {
         const res = await request(app.getHttpServer())
           .get('/api/products')
           .query({})
-          .expect(200);
+          .expect(HttpStatus.OK);
 
         expect(res.body.products.length).toEqual(10);
       });
@@ -221,7 +222,7 @@ describe('ProductController', () => {
             category: Category.HOBBY.toString(),
             keyword: '플루트1',
           })
-          .expect(200);
+          .expect(HttpStatus.OK);
 
         expect(res.body.products.length).toEqual(3);
       });
@@ -232,7 +233,7 @@ describe('ProductController', () => {
           .query({
             page: 2,
           })
-          .expect(200);
+          .expect(HttpStatus.OK);
 
         expect(res.body.products.length).toEqual(2);
       });
@@ -260,7 +261,7 @@ describe('ProductController', () => {
       const notExistsProductId = new Types.ObjectId().toString();
       const res = await request(app.getHttpServer())
         .get(`/api/products/${notExistsProductId}`)
-        .expect(200);
+        .expect(HttpStatus.OK);
       expect(res.body.product).toBeFalsy();
     });
 
@@ -268,7 +269,7 @@ describe('ProductController', () => {
       const productId = product._id.toString();
       const res = await request(app.getHttpServer())
         .get(`/api/products/${productId}`)
-        .expect(200);
+        .expect(HttpStatus.OK);
 
       expect(res.body.product.id).toEqual(productId);
       expect(res.body.product.name).toEqual(product.name);
@@ -313,7 +314,7 @@ describe('ProductController', () => {
           category: Category.JEWELRY,
           deadline: localDateTimeToString(new Date()),
         })
-        .expect(403);
+        .expect(HttpStatus.FORBIDDEN);
     });
 
     describe('요청한 사용자와 셀러의 정보가 일치하지 않을 경우', () => {
@@ -336,7 +337,7 @@ describe('ProductController', () => {
             email,
             password,
           })
-          .expect(201);
+          .expect(HttpStatus.CREATED);
       });
 
       test('요청한 사용자와 셀러의 정보가 일치하지 않을 경우 404 응답', async () => {
@@ -351,7 +352,7 @@ describe('ProductController', () => {
             category: Category.JEWELRY,
             deadline: localDateTimeToString(new Date()),
           })
-          .expect(404);
+          .expect(HttpStatus.NOT_FOUND);
 
         expect(err.body.message).toEqual(ProductErrorMessage.NOT_FOUND);
       });
@@ -367,7 +368,7 @@ describe('ProductController', () => {
             email,
             password,
           })
-          .expect(201);
+          .expect(HttpStatus.CREATED);
       });
 
       describe('상품 정보 수정 실패', () => {
@@ -383,7 +384,7 @@ describe('ProductController', () => {
               category: Category.JEWELRY,
               deadline: localDateTimeToString(new Date()),
             })
-            .expect(404);
+            .expect(HttpStatus.NOT_FOUND);
 
           expect(err.body.message).toEqual(ProductErrorMessage.NOT_FOUND);
         });
@@ -399,7 +400,7 @@ describe('ProductController', () => {
               category: '임의의카테고리',
               deadline: '2022',
             })
-            .expect(400);
+            .expect(HttpStatus.BAD_REQUEST);
 
           expect(err.body.message.length).toEqual(5);
           expect(err.body.message).toContain(ProductErrorMessage.EMPTY_NAME);
@@ -428,7 +429,7 @@ describe('ProductController', () => {
         await agent
           .patch(`/api/products/${productId}`)
           .send(updateProduct)
-          .expect(200);
+          .expect(HttpStatus.NO_CONTENT);
 
         const updatedProduct = await productRepository.findDetailInfoById(
           productId,

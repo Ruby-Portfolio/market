@@ -12,6 +12,7 @@ import { AuthErrorMessage } from '../../../module/auth/auth.message';
 import * as bcrypt from 'bcrypt';
 import { sessionConfig } from '../../../config/session.config';
 import { CommonErrorMessage } from '../../../common/error/common.message';
+import { HttpStatus } from '@nestjs/common';
 
 describe('AuthController', () => {
   let app: NestFastifyApplication;
@@ -60,7 +61,7 @@ describe('AuthController', () => {
             name: 'ruby11',
             phone: '010-1111-2222',
           })
-          .expect(400);
+          .expect(HttpStatus.BAD_REQUEST);
 
         return expect(err.body.message).toEqual(
           AuthErrorMessage.EXISTS_EMAIL_USER,
@@ -76,7 +77,7 @@ describe('AuthController', () => {
             name: 'r',
             phone: '0101111',
           })
-          .expect(400);
+          .expect(HttpStatus.BAD_REQUEST);
 
         await expect(err.body.message.length).toEqual(4);
         await expect(err.body.message).toContain(
@@ -102,7 +103,7 @@ describe('AuthController', () => {
             name: '김루비',
             phone: '010-1111-2222',
           })
-          .expect(400);
+          .expect(HttpStatus.BAD_REQUEST);
 
         await expect(err.body.message).toContain(
           AuthErrorMessage.INVALID_PASSWORD,
@@ -118,7 +119,7 @@ describe('AuthController', () => {
             name: '김루비',
             phone: '010-1111-2222',
           })
-          .expect(400);
+          .expect(HttpStatus.BAD_REQUEST);
 
         await expect(err.body.message).toContain(
           AuthErrorMessage.INVALID_PASSWORD,
@@ -134,7 +135,7 @@ describe('AuthController', () => {
             name: '김루비',
             phone: '010-1111-2222',
           })
-          .expect(400);
+          .expect(HttpStatus.BAD_REQUEST);
 
         await expect(err.body.message).toContain(
           AuthErrorMessage.INVALID_PASSWORD,
@@ -152,7 +153,7 @@ describe('AuthController', () => {
             name: '김루비',
             phone: '010-1111-2222',
           })
-          .expect(201);
+          .expect(HttpStatus.CREATED);
       });
     });
   });
@@ -181,7 +182,7 @@ describe('AuthController', () => {
             email: 'radas@naver.com',
             password,
           })
-          .expect(401);
+          .expect(HttpStatus.UNAUTHORIZED);
 
         expect(err.body.message).toEqual(AuthErrorMessage.INVALID_USER);
       });
@@ -193,7 +194,7 @@ describe('AuthController', () => {
             email,
             password: 'asdasd12312',
           })
-          .expect(401);
+          .expect(HttpStatus.UNAUTHORIZED);
 
         expect(err.body.message).toEqual(AuthErrorMessage.INVALID_USER);
       });
@@ -207,7 +208,7 @@ describe('AuthController', () => {
             email,
             password,
           })
-          .expect(201);
+          .expect(HttpStatus.CREATED);
       });
     });
   });
@@ -235,7 +236,7 @@ describe('AuthController', () => {
           email,
           password,
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
 
       expect(
         res.headers['set-cookie'][0].includes(process.env.SESSION_ID),
@@ -249,7 +250,7 @@ describe('AuthController', () => {
           email,
           password,
         })
-        .expect(200);
+        .expect(HttpStatus.OK);
 
       expect(res.headers['set-cookie']).toBeUndefined();
     });
