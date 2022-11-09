@@ -50,7 +50,7 @@ export class ProductRepository {
     query.skip(skip).limit(this.PAGE_SIZE);
 
     if (order === ProductOrder.DEADLINE) {
-      query.sort({ deadline: PagingConstant.DESC });
+      query.sort({ deadline: PagingConstant.ASC });
     }
 
     return query;

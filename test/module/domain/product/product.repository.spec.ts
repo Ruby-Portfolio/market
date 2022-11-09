@@ -77,7 +77,7 @@ describe('ProductRepository', () => {
           stock: 10,
           category: Category.HOBBY,
           country: market.country,
-          deadline: new Date(`2022-11-08 ${23 - i}:00`),
+          deadline: new Date(`2022-11-08 ${10 + i}:00`),
           marketId: market._id,
           userId: user._id,
         } as Product);
@@ -285,7 +285,7 @@ describe('ProductRepository', () => {
 
         const result = await productRepository.findBySearch(searchProducts);
         expect(result.length).toEqual(2);
-        expect(result[0].deadline > result[1].deadline).toBeTruthy();
+        expect(result[0].deadline < result[1].deadline).toBeTruthy();
       });
     });
   });
