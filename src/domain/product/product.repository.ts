@@ -62,6 +62,16 @@ export class ProductRepository {
     );
   }
 
+  async softDelete(
+    productId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<Product & { _id: Types.ObjectId }> {
+    return this.productModel.findOneAndUpdate(
+      { _id: productId, userId },
+      { deleteAt: new Date() },
+    );
+  }
+
   async deleteAll() {
     await this.productModel.deleteMany({}, {});
   }

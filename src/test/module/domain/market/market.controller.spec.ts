@@ -9,11 +9,12 @@ import { MarketModule } from '../../../../domain/market/market.module';
 import { UserRepository } from '../../../../domain/user/user.repository';
 import { AuthModule } from '../../../../module/auth/auth.module';
 import { validationPipe } from '../../../../common/pipe/validation.pipe';
-import { sessionConfig } from '../../../../module/auth/auth.session.config';
+import { sessionConfig } from '../../../../config/session.config';
 import { User } from '../../../../domain/user/user.schema';
 import { CommonErrorMessage } from '../../../../common/error/common.message';
 import { MarketErrorMessage } from '../../../../domain/market/market.message';
 import { Country } from '../../../../domain/common/enums/Country';
+import { HttpStatus } from '@nestjs/common';
 
 describe('MarketController', () => {
   let app: NestFastifyApplication;
@@ -66,7 +67,7 @@ describe('MarketController', () => {
           phone: '010-1111-2222',
           country: Country.USA.toString(),
         })
-        .expect(403);
+        .expect(HttpStatus.FORBIDDEN);
     });
 
     describe('로그인 상태에서 마켓 등록', () => {
@@ -79,7 +80,7 @@ describe('MarketController', () => {
             email,
             password,
           })
-          .expect(201);
+          .expect(HttpStatus.CREATED);
       });
 
       test('마켓 등록시 필요한 값들이 형식에 맞지 않을 경우 400 응답', async () => {
@@ -91,7 +92,7 @@ describe('MarketController', () => {
             phone: '010-1111-2',
             country: '',
           })
-          .expect(400);
+          .expect(HttpStatus.BAD_REQUEST);
 
         expect(err.body.message.length).toEqual(4);
         expect(err.body.message).toContain(MarketErrorMessage.EMPTY_NAME);
@@ -109,7 +110,7 @@ describe('MarketController', () => {
             phone: '010-1111-2222',
             country: Country.USA.toString(),
           })
-          .expect(201);
+          .expect(HttpStatus.CREATED);
 
         const markets = await marketRepository.findAll();
         expect(markets.length).toEqual(1);

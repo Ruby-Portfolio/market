@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -33,7 +34,7 @@ export class ProductController {
     @Body() createProduct: CreateProductDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
   ) {
-    return this.productService.createProduct(createProduct, user._id);
+    await this.productService.createProduct(createProduct, user._id);
   }
 
   @Get()
@@ -53,16 +54,23 @@ export class ProductController {
   }
 
   @UseGuards(AuthenticatedGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('/:productId')
   async patchProduct(
     @Param('productId') productId: Types.ObjectId,
     @Body() updateProduct: UpdateProductDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
   ) {
-    return this.productService.updateProduct(
-      productId,
-      user._id,
-      updateProduct,
-    );
+    await this.productService.updateProduct(productId, user._id, updateProduct);
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('/:productId')
+  async deleteProduct(
+    @Param('productId') productId: Types.ObjectId,
+    @SessionUser() user: User & { _id: Types.ObjectId },
+  ) {
+    await this.productService.deleteProduct(productId, user._id);
   }
 }
