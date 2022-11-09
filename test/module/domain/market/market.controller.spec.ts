@@ -4,17 +4,18 @@ import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ConfigModule } from '@nestjs/config';
 import * as request from 'supertest';
 import * as bcrypt from 'bcrypt';
-import { MarketRepository } from '../../../../domain/market/market.repository';
-import { MarketModule } from '../../../../domain/market/market.module';
-import { UserRepository } from '../../../../domain/user/user.repository';
-import { AuthModule } from '../../../../module/auth/auth.module';
-import { validationPipe } from '../../../../common/pipe/validation.pipe';
-import { sessionConfig } from '../../../../config/session.config';
-import { User } from '../../../../domain/user/user.schema';
-import { CommonErrorMessage } from '../../../../common/error/common.message';
-import { MarketErrorMessage } from '../../../../domain/market/market.message';
-import { Country } from '../../../../domain/common/enums/Country';
+
 import { HttpStatus } from '@nestjs/common';
+import { UserRepository } from '../../../../src/domain/user/user.repository';
+import { MarketRepository } from '../../../../src/domain/market/market.repository';
+import { AuthModule } from '../../../../src/module/auth/auth.module';
+import { MarketModule } from '../../../../src/domain/market/market.module';
+import { validationPipe } from '../../../../src/common/pipe/validation.pipe';
+import { sessionConfig } from '../../../../src/config/session.config';
+import { User } from '../../../../src/domain/user/user.schema';
+import { Country } from '../../../../src/domain/common/enums/Country';
+import { MarketErrorMessage } from '../../../../src/domain/market/market.message';
+import { CommonErrorMessage } from '../../../../src/common/error/common.message';
 
 describe('MarketController', () => {
   let app: NestFastifyApplication;

@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRepository } from '../../../domain/user/user.repository';
+import { UserRepository } from '../../../src/domain/user/user.repository';
 import { getModelToken } from '@nestjs/mongoose';
-import { User } from '../../../domain/user/user.schema';
-import { AuthStrategy } from '../../../module/auth/auth.strategy';
-import { InvalidUserInfoException } from '../../../module/auth/auth.exception';
+import { User } from '../../../src/domain/user/user.schema';
+import { AuthStrategy } from '../../../src/module/auth/auth.strategy';
+import { InvalidUserInfoException } from '../../../src/module/auth/auth.exception';
 import * as bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
 

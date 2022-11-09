@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRepository } from '../../../domain/user/user.repository';
+import { UserRepository } from '../../../src/domain/user/user.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from '../../../domain/user/user.module';
-import { AuthModule } from '../../../module/auth/auth.module';
-import { User } from '../../../domain/user/user.schema';
+import { UserModule } from '../../../src/domain/user/user.module';
+import { AuthModule } from '../../../src/module/auth/auth.module';
+import { User } from '../../../src/domain/user/user.schema';
 import * as request from 'supertest';
-import { validationPipe } from '../../../common/pipe/validation.pipe';
-import { AuthErrorMessage } from '../../../module/auth/auth.message';
+import { validationPipe } from '../../../src/common/pipe/validation.pipe';
+import { AuthErrorMessage } from '../../../src/module/auth/auth.message';
 import * as bcrypt from 'bcrypt';
-import { sessionConfig } from '../../../config/session.config';
-import { CommonErrorMessage } from '../../../common/error/common.message';
+import { sessionConfig } from '../../../src/config/session.config';
+import { CommonErrorMessage } from '../../../src/common/error/common.message';
 import { HttpStatus } from '@nestjs/common';
 
 describe('AuthController', () => {
