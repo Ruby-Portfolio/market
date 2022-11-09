@@ -51,15 +51,15 @@ export class ProductRepository {
       .sort({ _id: PagingConstant.DESC });
   }
 
-  async findByProductIdAndUserId(
+  async update(
     productId: Types.ObjectId,
     userId: Types.ObjectId,
-  ): Promise<(Product & { _id: Types.ObjectId })[]> {
-    return this.productModel.findOne({ _id: productId, userId });
-  }
-
-  async update(productId: Types.ObjectId, product: Product) {
-    await this.productModel.updateOne(productId, product);
+    product: Product,
+  ): Promise<Product & { _id: Types.ObjectId }> {
+    return this.productModel.findOneAndUpdate(
+      { _id: productId, userId },
+      product,
+    );
   }
 
   async deleteAll() {

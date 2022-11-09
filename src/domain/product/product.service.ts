@@ -59,20 +59,21 @@ export class ProductService {
     userId: Types.ObjectId,
     updateProduct: UpdateProductDto,
   ) {
-    const existsProduct = await this.productRepository.findByProductIdAndUserId(
-      productId,
-      userId,
-    );
-
-    if (!existsProduct) {
-      throw new NotFoundProductException();
-    }
-
     const product = {
       ...updateProduct,
       deadline: new Date(updateProduct.deadline),
     } as Product;
 
-    return this.productRepository.update(productId, product);
+    const updatedProduct = await this.productRepository.update(
+      productId,
+      userId,
+      product,
+    );
+
+    if (!updatedProduct) {
+      throw new NotFoundProductException();
+    }
+
+    return updatedProduct;
   }
 }
