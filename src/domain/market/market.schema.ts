@@ -32,12 +32,12 @@ export class Market extends Document {
   country: Country;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
-  user: Types.ObjectId;
+  userId: Types.ObjectId;
 }
 
 export const MarketSchema = SchemaFactory.createForClass(Market);
 MarketSchema.virtual('products', {
   ref: 'Product',
   localField: '_id',
-  foreignField: 'market',
+  foreignField: 'marketId',
 });

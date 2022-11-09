@@ -17,7 +17,7 @@ export class CreateProductDto extends PickType(Product, [
   'price',
   'stock',
   'category',
-  'market',
+  'marketId',
 ] as const) {
   @IsLocalDate({ message: ProductErrorMessage.INVALID_DEADLINE })
   deadline: string;

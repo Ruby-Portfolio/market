@@ -21,7 +21,7 @@ export class ProductRepository {
   async findDetailInfoById(
     productId: Types.ObjectId,
   ): Promise<Product & { _id: Types.ObjectId }> {
-    return this.productModel.findById(productId).populate('market').exec();
+    return this.productModel.findById(productId).populate('marketId');
   }
 
   async findBySearch({
@@ -48,8 +48,14 @@ export class ProductRepository {
     return query
       .skip(skip)
       .limit(this.PAGE_SIZE)
-      .sort({ _id: PagingConstant.DESC })
-      .exec();
+      .sort({ _id: PagingConstant.DESC });
+  }
+
+  async findByProductIdAndUserId(
+    productId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<(Product & { _id: Types.ObjectId })[]> {
+    return this.productModel.findOne({ _id: productId, userId });
   }
 
   async update(productId: Types.ObjectId, product: Product) {
@@ -57,10 +63,10 @@ export class ProductRepository {
   }
 
   async deleteAll() {
-    await this.productModel.deleteMany({}, {}).exec();
+    await this.productModel.deleteMany({}, {});
   }
 
   async findAll(): Promise<(Product & { _id: Types.ObjectId })[]> {
-    return this.productModel.find().exec();
+    return this.productModel.find();
   }
 }

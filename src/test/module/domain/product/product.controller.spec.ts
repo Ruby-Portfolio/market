@@ -72,7 +72,7 @@ describe('ProductController', () => {
       email: 'flute@naver.com',
       phone: '01011112222',
       country: Country.USA,
-      user: user._id,
+      userId: user._id,
     } as Market);
   });
 
@@ -113,7 +113,7 @@ describe('ProductController', () => {
               stock: 5,
               deadline: '2022-11-08 10:00',
               category: Category.HOBBY.toString(),
-              market: new Types.ObjectId(),
+              marketId: new Types.ObjectId(),
             })
             .expect(404);
 
@@ -128,7 +128,7 @@ describe('ProductController', () => {
               stock: null,
               category: '랜덤카테고리',
               deadline: '2022-02-02 10:66',
-              market: 123,
+              marketId: 123,
             })
             .expect(400);
 
@@ -159,7 +159,7 @@ describe('ProductController', () => {
             stock: 10,
             category: Category.HOBBY.toString(),
             deadline: '2022-11-08 10:00',
-            market: market._id,
+            marketId: market._id,
           })
           .expect(201);
 
@@ -181,7 +181,8 @@ describe('ProductController', () => {
           category: Category.HOBBY,
           country: market.country,
           deadline: new Date(`2022-11-08 ${10 + i}:00`),
-          market: market._id,
+          marketId: market._id,
+          userId: user._id,
         } as Product);
       }
     });
@@ -252,7 +253,8 @@ describe('ProductController', () => {
         category: Category.HOBBY,
         country: market.country,
         deadline: new Date(`2022-11-20 10:00`),
-        market: market._id,
+        marketId: market._id,
+        userId: user._id,
       } as Product);
     });
 
@@ -283,4 +285,33 @@ describe('ProductController', () => {
       expect(res.body.product.market.phone).toEqual(market.phone);
     });
   });
+
+  // describe('PATCH /api/products/:productId', () => {
+  //   test('로그인 하지 않은 상태에서 상품 수정 요청시 응답', async () => {});
+  //
+  //   describe('요청한 사용자와 셀러의 정보가 일치하지 않을 경우', () => {
+  //     test('');
+  //   });
+  //
+  //   describe('로그인 상태에서 상품 정보 수정', () => {
+  //     let agent;
+  //     beforeEach(async () => {
+  //       agent = await request.agent(app.getHttpServer());
+  //       await agent
+  //         .post('/api/auth/login')
+  //         .send({
+  //           email,
+  //           password,
+  //         })
+  //         .expect(201);
+  //     });
+  //
+  //     describe('상품 정보 수정 실패', () => {
+  //       test('등록되지 않은 상품의 정보 수정 요청시 404 응답', () => {});
+  //       test('상품 등록시 필요한 값들이 형식에 맞지 않을 경우 400 응답', () => {});
+  //     });
+  //
+  //     test('상품 정보 수정 성공', () => {});
+  //   });
+  // });
 });

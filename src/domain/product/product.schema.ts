@@ -44,7 +44,10 @@ export class Product extends Document {
 
   @IsId({ message: MarketErrorMessage.INVALID_MARKET_ID })
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Market', required: true })
-  market: Types.ObjectId;
+  marketId: Types.ObjectId;
+
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'User', required: true })
+  userId: Types.ObjectId;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

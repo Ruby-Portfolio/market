@@ -22,6 +22,7 @@ describe('ProductRepository', () => {
   let userRepository: UserRepository;
   let marketRepository: MarketRepository;
   let productRepository: ProductRepository;
+  let user: User & { _id: Types.ObjectId };
   let market: Market & { _id: Types.ObjectId };
 
   beforeAll(async () => {
@@ -49,7 +50,7 @@ describe('ProductRepository', () => {
     await userRepository.deleteAll();
 
     const hashedPassword = await bcrypt.hash('qwer1234', 12);
-    const user = await userRepository.create({
+    user = await userRepository.create({
       email: 'ruby@gmail.com',
       password: hashedPassword,
       name: 'ruby11',
@@ -60,7 +61,7 @@ describe('ProductRepository', () => {
       email: 'flute@naver.com',
       phone: '01011112222',
       country: Country.USA,
-      user: user._id,
+      userId: user._id,
     } as Market);
   });
 
@@ -76,7 +77,8 @@ describe('ProductRepository', () => {
           category: Category.HOBBY,
           country: market.country,
           deadline: new Date(`2022-11-08 ${10 + i}:00`),
-          market: market._id,
+          marketId: market._id,
+          userId: user._id,
         } as Product);
       }
     });
@@ -265,7 +267,8 @@ describe('ProductRepository', () => {
         category: Category.HOBBY,
         country: market.country,
         deadline: new Date(`2022-11-20 10:00`),
-        market: market._id,
+        marketId: market._id,
+        userId: user._id,
       } as Product);
     });
 

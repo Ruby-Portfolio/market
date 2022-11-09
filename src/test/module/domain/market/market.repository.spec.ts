@@ -55,7 +55,7 @@ describe('MarketRepository', () => {
         email: 'flute@naver.com',
         phone: '01011112222',
         country: Country.USA,
-        user: user._id,
+        userId: user._id,
       } as Market);
     });
 

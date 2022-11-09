@@ -22,7 +22,7 @@ export class ProductService {
     userId: Types.ObjectId,
   ): Promise<Product & { _id: Types.ObjectId }> {
     const existsMarket = await this.marketRepository.findByMarketIdAndUserId(
-      createProduct.market,
+      createProduct.marketId,
       userId,
     );
 
@@ -34,7 +34,8 @@ export class ProductService {
       ...createProduct,
       deadline: new Date(createProduct.deadline),
       country: existsMarket.country,
-      market: existsMarket._id,
+      marketId: existsMarket._id,
+      userId: userId,
     } as Product;
 
     return this.productRepository.create(product);
