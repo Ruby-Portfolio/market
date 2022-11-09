@@ -1,4 +1,4 @@
 export enum PagingConstant {
-  ASC = 0,
+  ASC = 1,
   DESC = -1,
 }

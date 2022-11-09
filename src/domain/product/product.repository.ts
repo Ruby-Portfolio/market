@@ -4,6 +4,7 @@ import { Model, Types } from 'mongoose';
 import { Product } from './product.schema';
 import { SearchProductsDto } from './product.request.dto';
 import { PagingConstant } from '../common/constant/page.constant';
+import { ProductOrder } from './product.enum';
 
 @Injectable()
 export class ProductRepository {
@@ -27,8 +28,9 @@ export class ProductRepository {
   async findBySearch({
     country,
     category,
+    order = ProductOrder.NEW,
     keyword,
-    page,
+    page = 1,
   }: SearchProductsDto): Promise<(Product & { _id: Types.ObjectId })[]> {
     const skip = (page - 1) * this.PAGE_SIZE;
 
@@ -45,10 +47,13 @@ export class ProductRepository {
       query.where('name').regex(fragmentWords.join('|'));
     }
 
-    return query
-      .skip(skip)
-      .limit(this.PAGE_SIZE)
-      .sort({ _id: PagingConstant.DESC });
+    query.skip(skip).limit(this.PAGE_SIZE);
+
+    if (order === ProductOrder.DEADLINE) {
+      query.sort({ deadline: PagingConstant.ASC });
+    }
+
+    return query;
   }
 
   async update(

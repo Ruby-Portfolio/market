@@ -23,6 +23,7 @@ import { ProductErrorMessage } from '../../../../src/domain/product/product.mess
 import { CommonErrorMessage } from '../../../../src/common/error/common.message';
 import { Product } from '../../../../src/domain/product/product.schema';
 import { localDateTimeToString } from '../../../../src/common/util/dateUtil';
+import { ProductOrder } from '../../../../src/domain/product/product.enum';
 
 describe('ProductController', () => {
   let app: NestFastifyApplication;
@@ -192,14 +193,18 @@ describe('ProductController', () => {
         .query({
           country: '알수없는국가',
           category: '존재하지않는카테고리',
+          order: '존재하지 않는 정렬조건',
           page: 0,
           keyword: ['asd', 'asdsad'],
         })
         .expect(HttpStatus.BAD_REQUEST);
 
-      expect(err.body.message.length).toEqual(4);
+      expect(err.body.message.length).toEqual(5);
       expect(err.body.message).toContain(CommonErrorMessage.INVALID_COUNTRY);
       expect(err.body.message).toContain(CommonErrorMessage.INVALID_CATEGORY);
+      expect(err.body.message).toContain(
+        ProductErrorMessage.INVALID_PRODUCT_ORDER,
+      );
       expect(err.body.message).toContain(CommonErrorMessage.INVALID_PAGE);
       expect(err.body.message).toContain(CommonErrorMessage.INVALID_KEYWORD);
     });
@@ -236,6 +241,52 @@ describe('ProductController', () => {
           .expect(HttpStatus.OK);
 
         expect(res.body.products.length).toEqual(2);
+      });
+
+      describe('정렬 조회', () => {
+        test('트', async () => {
+          const res = await request(app.getHttpServer())
+            .get('/api/products')
+            .query({
+              page: 2,
+            })
+            .expect(HttpStatus.OK);
+
+          expect(res.body.products.length).toEqual(2);
+          expect(
+            res.body.products[0].id > res.body.products[1].id,
+          ).toBeTruthy();
+        });
+
+        test('정렬 조건이 최신 순일 경우 최신 순으로 조회', async () => {
+          const res = await request(app.getHttpServer())
+            .get('/api/products')
+            .query({
+              order: ProductOrder.NEW,
+              page: 2,
+            })
+            .expect(HttpStatus.OK);
+
+          expect(res.body.products.length).toEqual(2);
+          expect(
+            res.body.products[0].id > res.body.products[1].id,
+          ).toBeTruthy();
+        });
+
+        test('정렬 조건이 주문 마감일 순일 경우 주문 마감 순으로 조회', async () => {
+          const res = await request(app.getHttpServer())
+            .get('/api/products')
+            .query({
+              order: ProductOrder.DEADLINE,
+              page: 2,
+            })
+            .expect(HttpStatus.OK);
+
+          expect(res.body.products.length).toEqual(2);
+          expect(
+            res.body.products[0].id < res.body.products[1].id,
+          ).toBeTruthy();
+        });
       });
     });
   });

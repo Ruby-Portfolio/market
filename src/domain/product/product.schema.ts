@@ -18,6 +18,7 @@ import { MarketErrorMessage } from '../market/market.message';
 import { Category } from '../common/enums/Category';
 import { Country } from '../common/enums/Country';
 import { CommonErrorMessage } from '../../common/error/common.message';
+import { PagingConstant } from '../common/constant/page.constant';
 
 const options: SchemaOptions = {
   timestamps: true,
@@ -78,6 +79,9 @@ const productSchema = () => {
     (method: MongooseQueryMiddleware | MongooseQueryMiddleware[] | RegExp) => {
       forClass.pre(method, function () {
         this.where({ deleteAt: null });
+      });
+      forClass.pre(method, function () {
+        this.sort({ _id: PagingConstant.DESC });
       });
     },
   );

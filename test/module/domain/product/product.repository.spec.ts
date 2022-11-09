@@ -16,6 +16,7 @@ import { Country } from '../../../../src/domain/common/enums/Country';
 import { Category } from '../../../../src/domain/common/enums/Category';
 import { Product } from '../../../../src/domain/product/product.schema';
 import { SearchProductsDto } from '../../../../src/domain/product/product.request.dto';
+import { ProductOrder } from '../../../../src/domain/product/product.enum';
 
 describe('ProductRepository', () => {
   let app: NestFastifyApplication;
@@ -251,6 +252,40 @@ describe('ProductRepository', () => {
 
         const result = await productRepository.findBySearch(searchProducts);
         expect(result.length).toEqual(2);
+      });
+    });
+
+    describe('정렬 조회', () => {
+      test('정렬 조건이 없을 시 최신 등록 순으로 조회', async () => {
+        const searchProducts: SearchProductsDto = {
+          page: 2,
+        };
+
+        const result = await productRepository.findBySearch(searchProducts);
+        expect(result.length).toEqual(2);
+        expect(result[0]._id > result[1]._id).toBeTruthy();
+      });
+
+      test('정렬 조건이 최신 순일 경우 최신 등록 순으로 조회', async () => {
+        const searchProducts: SearchProductsDto = {
+          page: 2,
+          order: ProductOrder.NEW,
+        };
+
+        const result = await productRepository.findBySearch(searchProducts);
+        expect(result.length).toEqual(2);
+        expect(result[0]._id > result[1]._id).toBeTruthy();
+      });
+
+      test('정렬 조건이 주문 마감 순일 경우 최신 등록 순으로 조회', async () => {
+        const searchProducts: SearchProductsDto = {
+          page: 2,
+          order: ProductOrder.DEADLINE,
+        };
+
+        const result = await productRepository.findBySearch(searchProducts);
+        expect(result.length).toEqual(2);
+        expect(result[0].deadline < result[1].deadline).toBeTruthy();
       });
     });
   });
