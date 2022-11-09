@@ -7,7 +7,7 @@ import { MarketModule } from '../../../../domain/market/market.module';
 import { UserRepository } from '../../../../domain/user/user.repository';
 import { AuthModule } from '../../../../module/auth/auth.module';
 import { validationPipe } from '../../../../common/pipe/validation.pipe';
-import { sessionConfig } from '../../../../module/auth/auth.session.config';
+import { sessionConfig } from '../../../../config/session.config';
 import { ProductModule } from '../../../../domain/product/product.module';
 import { ProductRepository } from '../../../../domain/product/product.repository';
 import * as request from 'supertest';

@@ -33,7 +33,7 @@ export class ProductController {
     @Body() createProduct: CreateProductDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
   ) {
-    return this.productService.createProduct(createProduct, user._id);
+    await this.productService.createProduct(createProduct, user._id);
   }
 
   @Get()
@@ -59,10 +59,6 @@ export class ProductController {
     @Body() updateProduct: UpdateProductDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
   ) {
-    return this.productService.updateProduct(
-      productId,
-      user._id,
-      updateProduct,
-    );
+    await this.productService.updateProduct(productId, user._id, updateProduct);
   }
 }

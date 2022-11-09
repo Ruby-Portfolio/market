@@ -10,7 +10,7 @@ import * as request from 'supertest';
 import { validationPipe } from '../../../common/pipe/validation.pipe';
 import { AuthErrorMessage } from '../../../module/auth/auth.message';
 import * as bcrypt from 'bcrypt';
-import { sessionConfig } from '../../../module/auth/auth.session.config';
+import { sessionConfig } from '../../../config/session.config';
 import { CommonErrorMessage } from '../../../common/error/common.message';
 
 describe('AuthController', () => {

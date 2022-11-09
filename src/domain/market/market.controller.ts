@@ -1,9 +1,9 @@
 import {
   Body,
   Controller,
+  HttpCode,
   HttpStatus,
   Post,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthenticatedGuard } from '../../module/auth/auth.guard';
@@ -18,13 +18,12 @@ export class MarketController {
   constructor(private readonly marketService: MarketService) {}
 
   @UseGuards(AuthenticatedGuard)
+  @HttpCode(HttpStatus.CREATED)
   @Post()
   async postMarket(
     @Body() createMarket: CreateMarketDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
-    @Res() res,
   ) {
     await this.marketService.createMarket(createMarket, user._id);
-    res.status(HttpStatus.CREATED).send();
   }
 }

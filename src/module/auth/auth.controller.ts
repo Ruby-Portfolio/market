@@ -2,10 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Post,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -16,10 +16,10 @@ import { AuthenticatedGuard, AuthLocalGuard } from './auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @HttpCode(HttpStatus.CREATED)
   @Post('signUp')
-  async signUp(@Body() createUser: CreateUserDto, @Res() res): Promise<void> {
+  async signUp(@Body() createUser: CreateUserDto): Promise<void> {
     await this.authService.signUp(createUser);
-    res.status(HttpStatus.CREATED).send();
   }
 
   @UseGuards(AuthLocalGuard)

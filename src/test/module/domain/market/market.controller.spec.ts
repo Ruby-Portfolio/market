@@ -9,7 +9,7 @@ import { MarketModule } from '../../../../domain/market/market.module';
 import { UserRepository } from '../../../../domain/user/user.repository';
 import { AuthModule } from '../../../../module/auth/auth.module';
 import { validationPipe } from '../../../../common/pipe/validation.pipe';
-import { sessionConfig } from '../../../../module/auth/auth.session.config';
+import { sessionConfig } from '../../../../config/session.config';
 import { User } from '../../../../domain/user/user.schema';
 import { CommonErrorMessage } from '../../../../common/error/common.message';
 import { MarketErrorMessage } from '../../../../domain/market/market.message';
