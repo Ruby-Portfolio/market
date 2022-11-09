@@ -81,7 +81,7 @@ export class ProductService {
     productId: Types.ObjectId,
     userId: Types.ObjectId,
   ): Promise<void> {
-    const deletedProduct = await this.productRepository.delete(
+    const deletedProduct = await this.productRepository.softDelete(
       productId,
       userId,
     );

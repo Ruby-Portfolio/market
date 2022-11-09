@@ -62,7 +62,7 @@ export class ProductRepository {
     );
   }
 
-  async delete(
+  async softDelete(
     productId: Types.ObjectId,
     userId: Types.ObjectId,
   ): Promise<Product & { _id: Types.ObjectId }> {

@@ -302,7 +302,7 @@ describe('ProductController', () => {
       } as Product);
     });
 
-    test('로그인 하지 않은 상태에서 상품 수정 요청시 응답 403 응답', async () => {
+    test('로그인 하지 않은 상태에서 상품 수정 요청시 403 응답', async () => {
       const productId = product._id.toString();
 
       await request(app.getHttpServer())
@@ -442,6 +442,101 @@ describe('ProductController', () => {
         expect(localDateTimeToString(updatedProduct.deadline)).toEqual(
           updateProduct.deadline,
         );
+      });
+    });
+  });
+
+  describe('DELETE /api/products/:productId', () => {
+    let product: Product & { _id: Types.ObjectId };
+    beforeAll(async () => {
+      await productRepository.deleteAll();
+
+      product = await productRepository.create({
+        name: '루비 플루트',
+        price: 100000000,
+        stock: 10,
+        category: Category.HOBBY,
+        country: market.country,
+        deadline: new Date(`2022-11-20 10:00`),
+        marketId: market._id,
+        userId: user._id,
+      } as Product);
+    });
+
+    test('로그인 하지 않은 상태에서 상품 삭제 요청시 403 응답', async () => {
+      const productId = product._id.toString();
+
+      await request(app.getHttpServer())
+        .delete(`/api/products/${productId}`)
+        .expect(HttpStatus.FORBIDDEN);
+    });
+
+    describe('요청한 사용자와 셀러의 정보가 일치하지 않을 경우', () => {
+      let agent;
+      beforeEach(async () => {
+        const email = 'qwer@naver.com';
+        const password = 'asdf1234';
+        const hashedPassword = await bcrypt.hash(password, 12);
+        await userRepository.create({
+          email,
+          password: hashedPassword,
+          name: 'ruby11',
+          phone: '010-1111-2222',
+        } as User);
+
+        agent = await request.agent(app.getHttpServer());
+        await agent
+          .post('/api/auth/login')
+          .send({
+            email,
+            password,
+          })
+          .expect(HttpStatus.CREATED);
+      });
+
+      test('요청한 사용자와 셀러의 정보가 일치하지 않을 경우 404 응답', async () => {
+        const productId = product._id.toString();
+
+        const err = await agent
+          .delete(`/api/products/${productId}`)
+          .expect(HttpStatus.NOT_FOUND);
+
+        expect(err.body.message).toEqual(ProductErrorMessage.NOT_FOUND);
+      });
+    });
+
+    describe('로그인 상태에서 상품 정보 삭제', () => {
+      let agent;
+      beforeEach(async () => {
+        agent = await request.agent(app.getHttpServer());
+        await agent
+          .post('/api/auth/login')
+          .send({
+            email,
+            password,
+          })
+          .expect(HttpStatus.CREATED);
+      });
+
+      test('존재하지 않는 상품 정보 삭제 요청시 404 응답', async () => {
+        const notExistsProductId = new Types.ObjectId().toString();
+
+        const err = await agent
+          .delete(`/api/products/${notExistsProductId}`)
+          .expect(HttpStatus.NOT_FOUND);
+
+        expect(err.body.message).toEqual(ProductErrorMessage.NOT_FOUND);
+      });
+
+      test('상품 정보 삭제 성공', async () => {
+        const productId = product._id.toString();
+
+        await agent
+          .delete(`/api/products/${productId}`)
+          .expect(HttpStatus.NO_CONTENT);
+
+        const products = await productRepository.findAll();
+        expect(products.length).toEqual(0);
       });
     });
   });
