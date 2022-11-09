@@ -167,3 +167,6 @@
 <summary>통합 테스트</summary>
 
 </details>
+
+### 테스트 전체 실행 결과
+![img_1.png](img_1.png)
