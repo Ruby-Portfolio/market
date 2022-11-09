@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -53,6 +54,7 @@ export class ProductController {
   }
 
   @UseGuards(AuthenticatedGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('/:productId')
   async patchProduct(
     @Param('productId') productId: Types.ObjectId,
@@ -60,5 +62,15 @@ export class ProductController {
     @SessionUser() user: User & { _id: Types.ObjectId },
   ) {
     await this.productService.updateProduct(productId, user._id, updateProduct);
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('/:productId')
+  async deleteProduct(
+    @Param('productId') productId: Types.ObjectId,
+    @SessionUser() user: User & { _id: Types.ObjectId },
+  ) {
+    await this.productService.deleteProduct(productId, user._id);
   }
 }

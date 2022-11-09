@@ -76,4 +76,18 @@ export class ProductService {
 
     return updatedProduct;
   }
+
+  async deleteProduct(
+    productId: Types.ObjectId,
+    userId: Types.ObjectId,
+  ): Promise<void> {
+    const deletedProduct = await this.productRepository.delete(
+      productId,
+      userId,
+    );
+
+    if (!deletedProduct) {
+      throw new NotFoundProductException();
+    }
+  }
 }

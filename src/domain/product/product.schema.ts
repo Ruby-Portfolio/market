@@ -1,4 +1,10 @@
-import { Document, SchemaOptions, SchemaTypes, Types } from 'mongoose';
+import {
+  Document,
+  MongooseQueryMiddleware,
+  SchemaOptions,
+  SchemaTypes,
+  Types,
+} from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsNumber } from 'class-validator';
 import {
@@ -42,6 +48,9 @@ export class Product extends Document {
   @Prop({ required: true })
   deadline: Date;
 
+  @Prop()
+  deleteAt: Date;
+
   @IsId({ message: MarketErrorMessage.INVALID_MARKET_ID })
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Market', required: true })
   marketId: Types.ObjectId;
@@ -50,4 +59,30 @@ export class Product extends Document {
   userId: Types.ObjectId;
 }
 
-export const ProductSchema = SchemaFactory.createForClass(Product);
+const productSchema = () => {
+  const forClass = SchemaFactory.createForClass(Product);
+  const findMethods: (
+    | MongooseQueryMiddleware
+    | MongooseQueryMiddleware[]
+    | RegExp
+  )[] = [
+    'find',
+    'findOne',
+    'findOneAndDelete',
+    'findOneAndReplace',
+    'findOneAndUpdate',
+    'findOneAndRemove',
+  ];
+
+  findMethods.forEach(
+    (method: MongooseQueryMiddleware | MongooseQueryMiddleware[] | RegExp) => {
+      forClass.pre(method, function () {
+        this.where({ deleteAt: null });
+      });
+    },
+  );
+
+  return forClass;
+};
+
+export const ProductSchema = productSchema();
