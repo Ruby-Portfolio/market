@@ -1,5 +1,36 @@
+## 개요
+- 구매자와 셀러의 거래 중계를 위한 서비스
+
 ## 기술 스택
 - TypeScript, NestJS, MongoDB
+
+## 스키마 설계
+- ### 유저
+  - email : 이메일
+  - name : 유저 이름
+  - phone : 연락처
+  - password : 비밀번호
+  - createAt : 유저 데이터 생성일
+  - updateAt : 유저 데이터 갱신일
+- ### 마켓
+  - name : 마켓명
+  - email : 마켓 이메일
+  - phone : 마켓 연락처
+  - country : 판매 국가
+  - userId : 유저 참조 ID
+  - createAt : 마켓 데이터 생성일
+  - updateAt : 마켓 데이터 갱신일
+- ### 상품
+  - name : 상품명
+  - price : 상품 가격
+  - stock : 재고
+  - category : 카테고리
+  - deadline : 주문 마감일
+  - userId : 유저 참조 ID
+  - marketId : 마켓 참조 ID
+  - createAt : 상품 데이터 생성일
+  - updateAt : 상품 데이터 갱신일
+  - deleteAt : 상품 데이터 삭제일
 
 ## 구현 기능
 
@@ -122,5 +153,17 @@
 | Method | URL               | Request Path | Response         |
 |--------|-------------------|--------------|------------------|
 | DELETE | /api/products/:id | id : 상품 id  | statusCode : 204 |
+
+</details>
+
+## 테스트
+
+<details>
+<summary>단위 테스트</summary>
+
+</details>
+
+<details>
+<summary>통합 테스트</summary>
 
 </details>
