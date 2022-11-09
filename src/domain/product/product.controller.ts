@@ -2,16 +2,21 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthenticatedGuard } from '../../module/auth/auth.guard';
 import { ProductService } from './product.service';
-import { CreateProductDto, SearchProductsDto } from './product.request.dto';
+import {
+  CreateProductDto,
+  SearchProductsDto,
+  UpdateProductDto,
+} from './product.request.dto';
 import { SessionUser } from '../../module/auth/auth.decorator';
 import { User } from '../user/user.schema';
 import { Types } from 'mongoose';
@@ -45,5 +50,13 @@ export class ProductController {
   ): Promise<ProductResponse> {
     const product = await this.productService.getProduct(productId);
     return new ProductResponse(product);
+  }
+
+  @Patch('/:productId')
+  async patchProduct(
+    @Param('productId') productId: Types.ObjectId,
+    @Body() updateProduct: UpdateProductDto,
+  ) {
+    return this.productService.updateProduct(productId, updateProduct);
   }
 }

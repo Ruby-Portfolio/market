@@ -34,3 +34,13 @@ export class SearchProductsDto {
   @IsString({ message: CommonErrorMessage.INVALID_KEYWORD })
   keyword?: string;
 }
+
+export class UpdateProductDto extends PickType(Product, [
+  'name',
+  'price',
+  'stock',
+  'category',
+] as const) {
+  @IsLocalDate({ message: ProductErrorMessage.INVALID_DEADLINE })
+  deadline: string;
+}

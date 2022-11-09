@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { ProductRepository } from './product.repository';
 import { Product } from './product.schema';
 import { Types } from 'mongoose';
-import { CreateProductDto, SearchProductsDto } from './product.request.dto';
+import {
+  CreateProductDto,
+  SearchProductsDto,
+  UpdateProductDto,
+} from './product.request.dto';
 import { MarketRepository } from '../market/market.repository';
 import { NotFoundMarketException } from '../market/market.exception';
 
@@ -46,5 +50,17 @@ export class ProductService {
     productId: Types.ObjectId,
   ): Promise<Product & { _id: Types.ObjectId }> {
     return this.productRepository.findDetailInfoById(productId);
+  }
+
+  async updateProduct(
+    productId: Types.ObjectId,
+    updateProduct: UpdateProductDto,
+  ) {
+    const product = {
+      ...updateProduct,
+      deadline: new Date(updateProduct.deadline),
+    } as Product;
+
+    return this.productRepository.update(productId, product);
   }
 }

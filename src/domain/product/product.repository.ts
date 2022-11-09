@@ -52,6 +52,10 @@ export class ProductRepository {
       .exec();
   }
 
+  async update(productId: Types.ObjectId, product: Product) {
+    await this.productModel.updateOne(productId, product);
+  }
+
   async deleteAll() {
     await this.productModel.deleteMany({}, {}).exec();
   }
