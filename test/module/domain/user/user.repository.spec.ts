@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRepository } from '../../../../domain/user/user.repository';
+import { UserRepository } from '../../../../src/domain/user/user.repository';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from '../../../../domain/user/user.module';
-import { User } from '../../../../domain/user/user.schema';
+import { UserModule } from '../../../../src/domain/user/user.module';
+import { User } from '../../../../src/domain/user/user.schema';
 
 describe('UserRepository', () => {
   let app: NestFastifyApplication;

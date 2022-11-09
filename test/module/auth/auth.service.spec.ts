@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from '../../../module/auth/auth.service';
-import { UserRepository } from '../../../domain/user/user.repository';
+import { AuthService } from '../../../src/module/auth/auth.service';
+import { UserRepository } from '../../../src/domain/user/user.repository';
 import { getModelToken } from '@nestjs/mongoose';
-import { User } from '../../../domain/user/user.schema';
-import { ExistsEmailUserException } from '../../../module/auth/auth.exception';
+import { User } from '../../../src/domain/user/user.schema';
+import { ExistsEmailUserException } from '../../../src/module/auth/auth.exception';
 import { Types } from 'mongoose';
 
 describe('AuthService', () => {

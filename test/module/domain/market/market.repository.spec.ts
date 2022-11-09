@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserRepository } from '../../../../domain/user/user.repository';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from '../../../../domain/user/user.module';
-import { User } from '../../../../domain/user/user.schema';
-import { MarketRepository } from '../../../../domain/market/market.repository';
-import { Market } from '../../../../domain/market/market.schema';
-import { MarketModule } from '../../../../domain/market/market.module';
 import { Types } from 'mongoose';
-import { Country } from '../../../../domain/common/enums/Country';
+import { MarketRepository } from '../../../../src/domain/market/market.repository';
+import { UserRepository } from '../../../../src/domain/user/user.repository';
+import { UserModule } from '../../../../src/domain/user/user.module';
+import { MarketModule } from '../../../../src/domain/market/market.module';
+import { User } from '../../../../src/domain/user/user.schema';
+import { Market } from '../../../../src/domain/market/market.schema';
+import { Country } from '../../../../src/domain/common/enums/Country';
 
 describe('MarketRepository', () => {
   let app: NestFastifyApplication;

@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { MarketRepository } from '../../../../domain/market/market.repository';
-import { ProductService } from '../../../../domain/product/product.service';
-import { Market } from '../../../../domain/market/market.schema';
-import { NotFoundMarketException } from '../../../../domain/market/market.exception';
-import { CreateProductDto } from '../../../../domain/product/product.request.dto';
-import { ProductRepository } from '../../../../domain/product/product.repository';
-import { Product } from '../../../../domain/product/product.schema';
+import { MarketRepository } from '../../../../src/domain/market/market.repository';
+import { ProductService } from '../../../../src/domain/product/product.service';
+import { Market } from '../../../../src/domain/market/market.schema';
+import { NotFoundMarketException } from '../../../../src/domain/market/market.exception';
+import { CreateProductDto } from '../../../../src/domain/product/product.request.dto';
+import { ProductRepository } from '../../../../src/domain/product/product.repository';
+import { Product } from '../../../../src/domain/product/product.schema';
 import { Types } from 'mongoose';
 
 describe('ProductService', () => {
