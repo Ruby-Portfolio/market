@@ -1,8 +1,12 @@
 ## 개요
 - 구매자와 셀러의 거래 중계를 위한 서비스
 
+<br>
+
 ## 기술 스택
 - TypeScript, NestJS, MongoDB
+
+<br>
 
 ## 스키마 설계
 - ### 유저
@@ -31,6 +35,8 @@
   - createAt : 상품 데이터 생성일
   - updateAt : 상품 데이터 갱신일
   - deleteAt : 상품 데이터 삭제일
+
+<br>
 
 ## 구현 기능
 
@@ -83,6 +89,8 @@
 
 - 상품을 등록한 셀러는 해당 상품의 정보를 삭제 가능
 </details>
+
+<br>
 
 ## API
 
@@ -156,17 +164,13 @@
 
 </details>
 
+<br>
+
 ## 테스트
 
-<details>
-<summary>단위 테스트</summary>
-
-</details>
-
-<details>
-<summary>통합 테스트</summary>
-
-</details>
+- 사용자 인증 - https://github.com/MisterRuby/market/tree/develop/test/module
+- 마켓 - https://github.com/MisterRuby/market/tree/develop/test/module/domain/market
+- 상가 - https://github.com/MisterRuby/market/tree/develop/test/module/domain/product
 
 ### 테스트 전체 실행 결과
 ![img_1.png](img_1.png)
