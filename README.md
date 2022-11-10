@@ -168,7 +168,7 @@
 
 ## 테스트
 
-- 사용자 인증 - https://github.com/MisterRuby/market/tree/develop/test/module
+- 사용자 인증 - https://github.com/MisterRuby/market/tree/develop/test/module/auth
 - 마켓 - https://github.com/MisterRuby/market/tree/develop/test/module/domain/market
 - 상가 - https://github.com/MisterRuby/market/tree/develop/test/module/domain/product
 
