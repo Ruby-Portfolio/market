@@ -7,12 +7,11 @@ import { UserModule } from '../../../src/domain/user/user.module';
 import { AuthModule } from '../../../src/module/auth/auth.module';
 import { User } from '../../../src/domain/user/user.schema';
 import * as request from 'supertest';
-import { validationPipe } from '../../../src/common/pipe/validation.pipe';
 import { AuthErrorMessage } from '../../../src/module/auth/auth.message';
 import * as bcrypt from 'bcrypt';
-import { sessionConfig } from '../../../src/config/session.config';
 import { CommonErrorMessage } from '../../../src/common/error/common.message';
 import { HttpStatus } from '@nestjs/common';
+import { testApp } from '../testAppInit';
 
 describe('AuthController', () => {
   let app: NestFastifyApplication;
@@ -30,10 +29,7 @@ describe('AuthController', () => {
       ],
     }).compile();
 
-    app = module.createNestApplication();
-    app.setGlobalPrefix('/api');
-    validationPipe(app);
-    sessionConfig(app);
+    app = testApp(module);
     await app.init();
 
     userRepository = module.get<UserRepository>(UserRepository);

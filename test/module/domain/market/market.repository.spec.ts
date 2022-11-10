@@ -9,7 +9,7 @@ import { UserModule } from '../../../../src/domain/user/user.module';
 import { MarketModule } from '../../../../src/domain/market/market.module';
 import { User } from '../../../../src/domain/user/user.schema';
 import { Market } from '../../../../src/domain/market/market.schema';
-import { Country } from '../../../../src/domain/common/enums/Country';
+import { Country } from '../../../../src/domain/common/enums/country';
 
 describe('MarketRepository', () => {
   let app: NestFastifyApplication;
