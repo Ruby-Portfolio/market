@@ -1,5 +1,9 @@
 import { ValidationPipe } from '@nestjs/common';
 
+/**
+ * 요청시 검증을 위한 ValidationPipe 의 Global 적용
+ * @param app
+ */
 export const validationPipe = (app) => {
   app.useGlobalPipes(
     new ValidationPipe({

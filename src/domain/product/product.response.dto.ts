@@ -1,6 +1,6 @@
 import { Product } from './product.schema';
 import { Types } from 'mongoose';
-import { Country } from '../common/enums/Country';
+import { Country } from '../common/enums/country';
 import { localDateTimeToString } from '../../common/util/dateUtil';
 
 export class ProductResponse {

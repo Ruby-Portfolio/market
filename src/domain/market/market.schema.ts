@@ -7,7 +7,7 @@ import {
   IsCountry,
   IsNotBlankString,
 } from '../../common/validation/validation.decorator';
-import { Country } from '../common/enums/Country';
+import { Country } from '../common/enums/country';
 
 const options: SchemaOptions = {
   timestamps: true,

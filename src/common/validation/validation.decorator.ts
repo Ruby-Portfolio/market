@@ -1,7 +1,11 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
-import { Country } from '../../domain/common/enums/Country';
-import { Category } from '../../domain/common/enums/Category';
+import { Country } from '../../domain/common/enums/country';
+import { Category } from '../../domain/common/enums/category';
 
+/**
+ * Id 검증 Validator
+ * @param validationOptions
+ */
 export function IsId(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
@@ -18,10 +22,14 @@ export function IsId(validationOptions?: ValidationOptions) {
   };
 }
 
+/**
+ * 빈 공백이 아닌 문자열 검증 Validator
+ * @param validationOptions
+ */
 export function IsNotBlankString(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'isName',
+      name: 'isNotBlankString',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
@@ -38,10 +46,14 @@ export function IsNotBlankString(validationOptions?: ValidationOptions) {
   };
 }
 
+/**
+ * 날짜 형식의 문자열 검증 Validator
+ * @param validationOptions
+ */
 export function IsLocalDate(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'isName',
+      name: 'isLocalDate',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
@@ -61,6 +73,10 @@ export function IsLocalDate(validationOptions?: ValidationOptions) {
   };
 }
 
+/**
+ * 국가 값 검증 Validator
+ * @param validationOptions
+ */
 export function IsCountry(
   validationOptions?: ValidationOptions & { nullable?: boolean },
 ) {
@@ -70,7 +86,7 @@ export function IsCountry(
 
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'isName',
+      name: 'isCountry',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
@@ -87,6 +103,10 @@ export function IsCountry(
   };
 }
 
+/**
+ * 카테고리 값 검증 Validator
+ * @param validationOptions
+ */
 export function IsCategory(
   validationOptions?: ValidationOptions & { nullable?: boolean },
 ) {
@@ -96,7 +116,7 @@ export function IsCategory(
 
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'isName',
+      name: 'isCategory',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
@@ -113,6 +133,10 @@ export function IsCategory(
   };
 }
 
+/**
+ * 페이지 번호 값 검증 Validator
+ * @param validationOptions
+ */
 export function IsPage(
   validationOptions?: ValidationOptions & { nullable?: boolean },
 ) {
@@ -125,7 +149,7 @@ export function IsPage(
   };
   return function (object: Object, propertyName: string) {
     registerDecorator({
-      name: 'isId',
+      name: 'isPage',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,

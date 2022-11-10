@@ -2,6 +2,10 @@
 import * as passport from 'passport';
 import * as session from 'express-session';
 
+/**
+ * session 적용 설정
+ * @param app
+ */
 export const sessionConfig = (app) => {
   app.use(
     session({
