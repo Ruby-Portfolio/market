@@ -1,21 +1,21 @@
 import { registerDecorator, ValidationOptions } from 'class-validator';
 import { ProductOrder } from './product.enum';
 
-export function IsProductOrder(
+export const IsProductOrder: Function = (
   validationOptions?: ValidationOptions & { nullable?: boolean },
-) {
-  const isEmpty = (value): boolean => {
+): Function => {
+  const isEmpty: Function = (value): boolean => {
     return validationOptions.nullable && !value;
   };
 
-  return function (object: Object, propertyName: string) {
+  return (object: Object, propertyName: string): void => {
     registerDecorator({
       name: 'isName',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any) {
+        validate(value: any): boolean | Promise<boolean> {
           if (isEmpty(value)) {
             return true;
           }
@@ -25,4 +25,4 @@ export function IsProductOrder(
       },
     });
   };
-}
+};

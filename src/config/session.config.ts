@@ -2,7 +2,11 @@
 import * as passport from 'passport';
 import * as session from 'express-session';
 
-export const sessionConfig = (app) => {
+/**
+ * session 적용 설정
+ * @param app
+ */
+export const sessionConfig: Function = (app): void => {
   app.use(
     session({
       name: process.env.SESSION_ID,

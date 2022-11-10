@@ -1,5 +1,9 @@
-export const localDateTimeToString = (date: Date) => {
-  const year = date.getFullYear();
+/**
+ * Date 타입을 'YYYY-MM-DD HH:mm 형식의 문자열로 변환'
+ * @param date Date 객체
+ */
+export const localDateTimeToString = (date: Date): string => {
+  const year: number = date.getFullYear();
   let month: string | number = date.getMonth() + 1;
   month = month < 10 ? '0' + month : month;
   let day: string | number = date.getDate();

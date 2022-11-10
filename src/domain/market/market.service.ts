@@ -11,7 +11,7 @@ export class MarketService {
   async createMarket(
     { name, email, phone, country }: CreateMarketDto,
     userId: Types.ObjectId,
-  ) {
+  ): Promise<Market & { _id: Types.ObjectId }> {
     return this.marketRepository.create({
       name,
       email,

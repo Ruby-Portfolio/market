@@ -7,8 +7,8 @@ import {
   IsPage,
 } from '../../common/validation/validation.decorator';
 import { ProductErrorMessage } from './product.message';
-import { Country } from '../common/enums/Country';
-import { Category } from '../common/enums/Category';
+import { Country } from '../common/enums/country';
+import { Category } from '../common/enums/category';
 import { CommonErrorMessage } from '../../common/error/common.message';
 import { IsOptional, IsString } from 'class-validator';
 import { ProductOrder } from './product.enum';

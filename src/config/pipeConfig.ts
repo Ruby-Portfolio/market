@@ -1,5 +1,9 @@
 import { validationPipe } from '../common/pipe/validation.pipe';
 
-export const pipeConfig = (app) => {
+/**
+ * pipe 적용 설정
+ * @param app
+ */
+export const pipeConfig: Function = (app): void => {
   validationPipe(app);
 };

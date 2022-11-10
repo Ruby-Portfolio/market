@@ -33,7 +33,7 @@ export class ProductController {
   async postProduct(
     @Body() createProduct: CreateProductDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
-  ) {
+  ): Promise<void> {
     await this.productService.createProduct(createProduct, user._id);
   }
 
@@ -60,7 +60,7 @@ export class ProductController {
     @Param('productId') productId: Types.ObjectId,
     @Body() updateProduct: UpdateProductDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
-  ) {
+  ): Promise<void> {
     await this.productService.updateProduct(productId, user._id, updateProduct);
   }
 
@@ -70,7 +70,7 @@ export class ProductController {
   async deleteProduct(
     @Param('productId') productId: Types.ObjectId,
     @SessionUser() user: User & { _id: Types.ObjectId },
-  ) {
+  ): Promise<void> {
     await this.productService.deleteProduct(productId, user._id);
   }
 }

@@ -10,12 +10,11 @@ import { UserRepository } from '../../../../src/domain/user/user.repository';
 import { MarketRepository } from '../../../../src/domain/market/market.repository';
 import { AuthModule } from '../../../../src/module/auth/auth.module';
 import { MarketModule } from '../../../../src/domain/market/market.module';
-import { validationPipe } from '../../../../src/common/pipe/validation.pipe';
-import { sessionConfig } from '../../../../src/config/session.config';
 import { User } from '../../../../src/domain/user/user.schema';
-import { Country } from '../../../../src/domain/common/enums/Country';
+import { Country } from '../../../../src/domain/common/enums/country';
 import { MarketErrorMessage } from '../../../../src/domain/market/market.message';
 import { CommonErrorMessage } from '../../../../src/common/error/common.message';
+import { testApp } from '../../testAppInit';
 
 describe('MarketController', () => {
   let app: NestFastifyApplication;
@@ -34,10 +33,7 @@ describe('MarketController', () => {
       ],
     }).compile();
 
-    app = module.createNestApplication();
-    app.setGlobalPrefix('/api');
-    validationPipe(app);
-    sessionConfig(app);
+    app = testApp(module);
     await app.init();
 
     userRepository = module.get<UserRepository>(UserRepository);

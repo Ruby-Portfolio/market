@@ -1,3 +1,4 @@
+import * as mongoose from 'mongoose';
 import {
   Document,
   MongooseQueryMiddleware,
@@ -15,10 +16,10 @@ import {
 } from '../../common/validation/validation.decorator';
 import { ProductErrorMessage } from './product.message';
 import { MarketErrorMessage } from '../market/market.message';
-import { Category } from '../common/enums/Category';
-import { Country } from '../common/enums/Country';
+import { Category } from '../common/enums/category';
+import { Country } from '../common/enums/country';
 import { CommonErrorMessage } from '../../common/error/common.message';
-import { PagingConstant } from '../common/constant/page.constant';
+import { Paging } from '../common/enums/paging';
 
 const options: SchemaOptions = {
   timestamps: true,
@@ -60,7 +61,7 @@ export class Product extends Document {
   userId: Types.ObjectId;
 }
 
-const productSchema = () => {
+const productSchema: () => mongoose.Schema<Product> = () => {
   const forClass = SchemaFactory.createForClass(Product);
   const findMethods: (
     | MongooseQueryMiddleware
@@ -81,7 +82,7 @@ const productSchema = () => {
         this.where({ deleteAt: null });
       });
       forClass.pre(method, function () {
-        this.sort({ _id: PagingConstant.DESC });
+        this.sort({ _id: Paging.DESC });
       });
     },
   );

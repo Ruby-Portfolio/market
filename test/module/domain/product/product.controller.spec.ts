@@ -14,16 +14,15 @@ import { Market } from '../../../../src/domain/market/market.schema';
 import { AuthModule } from '../../../../src/module/auth/auth.module';
 import { MarketModule } from '../../../../src/domain/market/market.module';
 import { ProductModule } from '../../../../src/domain/product/product.module';
-import { validationPipe } from '../../../../src/common/pipe/validation.pipe';
-import { sessionConfig } from '../../../../src/config/session.config';
-import { Country } from '../../../../src/domain/common/enums/Country';
-import { Category } from '../../../../src/domain/common/enums/Category';
+import { Country } from '../../../../src/domain/common/enums/country';
+import { Category } from '../../../../src/domain/common/enums/category';
 import { MarketErrorMessage } from '../../../../src/domain/market/market.message';
 import { ProductErrorMessage } from '../../../../src/domain/product/product.message';
 import { CommonErrorMessage } from '../../../../src/common/error/common.message';
 import { Product } from '../../../../src/domain/product/product.schema';
 import { localDateTimeToString } from '../../../../src/common/util/dateUtil';
 import { ProductOrder } from '../../../../src/domain/product/product.enum';
+import { testApp } from '../../testAppInit';
 
 describe('ProductController', () => {
   let app: NestFastifyApplication;
@@ -48,10 +47,7 @@ describe('ProductController', () => {
       ],
     }).compile();
 
-    app = module.createNestApplication();
-    app.setGlobalPrefix('/api');
-    validationPipe(app);
-    sessionConfig(app);
+    app = testApp(module);
     await app.init();
 
     userRepository = module.get<UserRepository>(UserRepository);

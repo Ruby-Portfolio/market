@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Product } from './product.schema';
 import { SearchProductsDto } from './product.request.dto';
-import { PagingConstant } from '../common/constant/page.constant';
+import { Paging } from '../common/enums/paging';
 import { ProductOrder } from './product.enum';
 
 @Injectable()
@@ -50,7 +50,7 @@ export class ProductRepository {
     query.skip(skip).limit(this.PAGE_SIZE);
 
     if (order === ProductOrder.DEADLINE) {
-      query.sort({ deadline: PagingConstant.ASC });
+      query.sort({ deadline: Paging.ASC });
     }
 
     return query;
@@ -77,7 +77,7 @@ export class ProductRepository {
     );
   }
 
-  async deleteAll() {
+  async deleteAll(): Promise<void> {
     await this.productModel.deleteMany({}, {});
   }
 
