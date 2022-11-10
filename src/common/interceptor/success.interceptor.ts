@@ -13,8 +13,8 @@ import { map, Observable } from 'rxjs';
 export class SuccessInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map((data) => {
-        const res = context.switchToHttp().getResponse();
+      map((data): void => {
+        const res: any = context.switchToHttp().getResponse();
         res.json(data);
       }),
     );

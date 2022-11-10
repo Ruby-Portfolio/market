@@ -23,7 +23,7 @@ export class MarketController {
   async postMarket(
     @Body() createMarket: CreateMarketDto,
     @SessionUser() user: User & { _id: Types.ObjectId },
-  ) {
+  ): Promise<void> {
     await this.marketService.createMarket(createMarket, user._id);
   }
 }

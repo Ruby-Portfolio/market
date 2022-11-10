@@ -21,7 +21,7 @@ export class UserRepository {
     return this.userModel.findOne({ email });
   }
 
-  async deleteAll() {
+  async deleteAll(): Promise<void> {
     await this.userModel.deleteMany({}, {}).exec();
   }
 }

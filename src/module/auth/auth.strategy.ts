@@ -4,6 +4,8 @@ import { Strategy } from 'passport-local';
 import * as bcrypt from 'bcrypt';
 import { UserRepository } from '../../domain/user/user.repository';
 import { InvalidUserInfoException } from './auth.exception';
+import { User } from '../../domain/user/user.schema';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthStrategy extends PassportStrategy(Strategy) {
@@ -11,7 +13,10 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
     super({ usernameField: 'email', passwordField: 'password' });
   }
 
-  async validate(email: string, pass: string): Promise<any> {
+  async validate(
+    email: string,
+    pass: string,
+  ): Promise<User & { _id: Types.ObjectId }> {
     const findUser = await this.userRepository.findByEmail(email);
 
     if (!findUser) {

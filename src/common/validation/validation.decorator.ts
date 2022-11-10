@@ -6,35 +6,39 @@ import { Category } from '../../domain/common/enums/category';
  * Id 검증 Validator
  * @param validationOptions
  */
-export function IsId(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
+export const IsId: Function = (
+  validationOptions?: ValidationOptions,
+): Function => {
+  return (object: Object, propertyName: string): void => {
     registerDecorator({
       name: 'isId',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any) {
+        validate(value: any): boolean | Promise<boolean> {
           return value && typeof value === 'string';
         },
       },
     });
   };
-}
+};
 
 /**
  * 빈 공백이 아닌 문자열 검증 Validator
  * @param validationOptions
  */
-export function IsNotBlankString(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
+export const IsNotBlankString: Function = (
+  validationOptions?: ValidationOptions,
+): Function => {
+  return (object: Object, propertyName: string): void => {
     registerDecorator({
       name: 'isNotBlankString',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any) {
+        validate(value: any): boolean | Promise<boolean> {
           if (typeof value !== 'string') {
             return false;
           }
@@ -44,21 +48,23 @@ export function IsNotBlankString(validationOptions?: ValidationOptions) {
       },
     });
   };
-}
+};
 
 /**
  * 날짜 형식의 문자열 검증 Validator
  * @param validationOptions
  */
-export function IsLocalDate(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
+export const IsLocalDate: Function = (
+  validationOptions?: ValidationOptions,
+): Function => {
+  return (object: Object, propertyName: string): void => {
     registerDecorator({
       name: 'isLocalDate',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any) {
+        validate(value: any): boolean | Promise<boolean> {
           if (typeof value !== 'string') {
             return false;
           }
@@ -71,27 +77,27 @@ export function IsLocalDate(validationOptions?: ValidationOptions) {
       },
     });
   };
-}
+};
 
 /**
  * 국가 값 검증 Validator
  * @param validationOptions
  */
-export function IsCountry(
+export const IsCountry: Function = (
   validationOptions?: ValidationOptions & { nullable?: boolean },
-) {
-  const isEmpty = (value): boolean => {
+): Function => {
+  const isEmpty: Function = (value): boolean => {
     return validationOptions.nullable && !value;
   };
 
-  return function (object: Object, propertyName: string) {
+  return (object: Object, propertyName: string): void => {
     registerDecorator({
       name: 'isCountry',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any) {
+        validate(value: any): boolean | Promise<boolean> {
           if (isEmpty(value)) {
             return true;
           }
@@ -101,27 +107,27 @@ export function IsCountry(
       },
     });
   };
-}
+};
 
 /**
  * 카테고리 값 검증 Validator
  * @param validationOptions
  */
-export function IsCategory(
+export const IsCategory: Function = (
   validationOptions?: ValidationOptions & { nullable?: boolean },
-) {
-  const isEmpty = (value): boolean => {
+): Function => {
+  const isEmpty: Function = (value): boolean => {
     return validationOptions.nullable && !value;
   };
 
-  return function (object: Object, propertyName: string) {
+  return (object: Object, propertyName: string): void => {
     registerDecorator({
       name: 'isCategory',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any) {
+        validate(value: any): boolean | Promise<boolean> {
           if (isEmpty(value)) {
             return true;
           }
@@ -131,30 +137,30 @@ export function IsCategory(
       },
     });
   };
-}
+};
 
 /**
  * 페이지 번호 값 검증 Validator
  * @param validationOptions
  */
-export function IsPage(
+export const IsPage = (
   validationOptions?: ValidationOptions & { nullable?: boolean },
-) {
-  const isEmpty = (value): boolean => {
+): Function => {
+  const isEmpty: Function = (value): boolean => {
     return validationOptions.nullable && !value && value !== 0;
   };
 
-  const isNumber = (value): boolean => {
+  const isNumber: Function = (value): boolean => {
     return typeof value === 'number' && !isNaN(value) && value > 0;
   };
-  return function (object: Object, propertyName: string) {
+  return (object: Object, propertyName: string): void => {
     registerDecorator({
       name: 'isPage',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any) {
+        validate(value: any): boolean | Promise<boolean> {
           if (isEmpty(value)) {
             return true;
           }
@@ -164,4 +170,4 @@ export function IsPage(
       },
     });
   };
-}
+};

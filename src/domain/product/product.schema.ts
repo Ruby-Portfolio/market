@@ -1,3 +1,4 @@
+import * as mongoose from 'mongoose';
 import {
   Document,
   MongooseQueryMiddleware,
@@ -60,7 +61,7 @@ export class Product extends Document {
   userId: Types.ObjectId;
 }
 
-const productSchema = () => {
+const productSchema: () => mongoose.Schema<Product> = () => {
   const forClass = SchemaFactory.createForClass(Product);
   const findMethods: (
     | MongooseQueryMiddleware

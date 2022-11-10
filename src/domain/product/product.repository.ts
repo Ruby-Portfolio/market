@@ -77,7 +77,7 @@ export class ProductRepository {
     );
   }
 
-  async deleteAll() {
+  async deleteAll(): Promise<void> {
     await this.productModel.deleteMany({}, {});
   }
 
