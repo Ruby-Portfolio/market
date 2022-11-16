@@ -201,7 +201,7 @@ deadline : 주문 마감일
 
 == 테스트
 
-* link:https://github.com/MisterRuby/market/tree/develop/test/module[사용자 인증]
+* link:https://github.com/MisterRuby/market/tree/develop/test/module/auth[사용자 인증]
 * link:https://github.com/MisterRuby/market/tree/develop/test/module/domain/market[마켓]
 * link:https://github.com/MisterRuby/market/tree/develop/test/module/domain/product[상가]
 
